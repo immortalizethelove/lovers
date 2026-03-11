@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>LoveDate ❤️</title>
+
+<style>
+
+body{
+margin:0;
+background:black;
+color:white;
+font-family:Arial;
+text-align:center;
+display:flex;
+align-items:center;
+justify-content:center;
+flex-direction:column;
+height:100vh;
+}
+
+img{
+max-width:90%;
+border-radius:15px;
+margin-bottom:20px;
+}
+
+button{
+padding:14px 30px;
+font-size:18px;
+border:none;
+border-radius:30px;
+background:#e91e63;
+color:white;
+cursor:pointer;
+}
+
+</style>
+</head>
+
+<body>
+
+<img id="foto">
+
+<button onclick="playMusic()">Şarkıyı Çal ❤️</button>
+
+<audio id="music"></audio>
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+const code = params.get("code");
+
+const foto = "codes/"+code+"/foto.jpg";
+const sarki = "codes/"+code+"/sarki.mp3";
+
+let img = new Image();
+
+img.onload = function(){
+
+document.getElementById("foto").src = foto;
+document.getElementById("music").src = sarki;
+
+}
+
+img.onerror = function(){
+
+document.body.innerHTML="<h1>Yanlış Kod ❌</h1>";
+
+}
+
+img.src = foto;
+
+function playMusic(){
+
+document.getElementById("music").play();
+
+}
+
+</script>
+
+</body>
+</html>
