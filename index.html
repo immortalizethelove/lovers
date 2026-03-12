@@ -7,8 +7,8 @@
 body{
 margin:0;
 background:black;
-font-family:Arial;
 overflow:hidden;
+font-family:Arial;
 }
 
 /* SAHNE */
@@ -21,19 +21,6 @@ background:black;
 display:flex;
 align-items:center;
 justify-content:center;
-}
-
-/* KALP SPOT IŞIĞI */
-
-#heartSpot{
-position:absolute;
-width:400px;
-height:350px;
-background:white;
-clip-path:path("M200 350 L40 200 A90 90 0 1 1 200 120 A90 90 0 1 1 360 200 Z");
-filter:blur(25px);
-opacity:0.9;
-z-index:1;
 }
 
 /* PLAY */
@@ -81,6 +68,8 @@ background-position:left;
 right:0;
 background-position:right;
 }
+
+/* PERDE AÇILMASI */
 
 .openLeft{
 transform:translateX(-100%);
@@ -166,12 +155,11 @@ animation:float 6s linear infinite;
 100%{transform:translateY(-10vh);opacity:0}
 }
 
-</style></head><body><div id="stage"><div id="heartSpot"></div><div id="playBtn" onclick="startExperience()"></div><div id="leftCurtain" class="curtain"></div>
+</style></head><body><div id="stage"><div id="playBtn" onclick="startExperience()"></div><div id="leftCurtain" class="curtain"></div>
 <div id="rightCurtain" class="curtain"></div><div id="countdown">
 <video id="countVideo" src="countdown.mp4"></video>
-</div></div><div id="flash"></div><div id="codeScreen"><h2>❤️Sürprize son bir adım❤️</h2><input id="codeInput" placeholder="Kod gir"><button onclick="go()">Aç</button>
-
-</div><script>
+</div></div><div id="flash"></div><div id="codeScreen"><h2>❤️Sürprize son bir adım❤️</h2><input id="codeInput" placeholder="Kod gir">
+<button onclick="go()">Aç</button></div><script>
 
 function startExperience(){
 
@@ -185,8 +173,6 @@ setTimeout(startCountdown,2500);
 }
 
 function startCountdown(){
-
-document.getElementById("heartSpot").style.display="none";
 
 let countdown=document.getElementById("countdown");
 let video=document.getElementById("countVideo");
@@ -221,13 +207,16 @@ function showCode(){
 document.getElementById("stage").style.display="none";
 
 let screen=document.getElementById("codeScreen");
+
 screen.style.display="flex";
 
 setInterval(()=>{
 
 let h=document.createElement("div");
+
 h.className="heart";
 h.innerText="❤";
+
 h.style.left=Math.random()*100+"%";
 
 document.body.appendChild(h);
