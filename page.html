@@ -4,16 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Bizim Şarkımız</title>
+<title>Bizim Şarkımız ❤️</title>
 
 <style>
 
 body{
 margin:0;
 background:black;
+color:white;
 font-family:Arial;
 text-align:center;
-color:white;
 overflow:hidden;
 }
 
@@ -64,11 +64,6 @@ color:white;
 cursor:pointer;
 }
 
-#songBtn{
-width:100%;
-margin-top:25px;
-}
-
 #error{
 color:red;
 margin-top:15px;
@@ -102,8 +97,6 @@ border-radius:20px;
 
 <img id="foto" src="foto.jpg">
 
-<button id="songBtn" onclick="cal()">Şarkıyı Başlat 🎵</button>
-
 <div id="error">Yanlış Kod</div>
 
 <audio id="music" src="sarki.mp3"></audio>
@@ -114,12 +107,14 @@ border-radius:20px;
 
 function kontrol(){
 
-let girilen = document.getElementById("code").value.trim()
+let kod=document.getElementById("code").value.trim()
 
-if(girilen === "EC2026"){
+if(kod==="x7Kp92Lm"){
 
 document.getElementById("foto").style.display="block"
 document.getElementById("error").style.display="none"
+
+document.getElementById("music").play()
 
 }else{
 
@@ -129,15 +124,9 @@ document.getElementById("error").style.display="block"
 
 }
 
-function cal(){
+/* kalp animasyonu */
 
-document.getElementById("music").play()
-
-}
-
-/* kalp oluştur */
-
-for(let i=0;i<25;i++){
+for(let i=0;i<30;i++){
 
 let kalp=document.createElement("div")
 kalp.className="heart"
