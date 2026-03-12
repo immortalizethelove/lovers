@@ -61,21 +61,15 @@ transition:2.2s ease;
 z-index:10;
 }
 
-/* SOL PERDE */
-
 #leftCurtain{
 left:0;
 background-position:left center;
 }
 
-/* SAĞ PERDE */
-
 #rightCurtain{
 right:0;
 background-position:right center;
 }
-
-/* PERDE AÇILMA */
 
 .openLeft{
 transform:translateX(-100%);
@@ -85,20 +79,23 @@ transform:translateX(-100%);
 transform:translateX(100%);
 }
 
-/* COUNTDOWN */
+/* FILM COUNTDOWN */
 
 #countdown{
-position:absolute;
-display:none;
+position:fixed;
 width:100%;
 height:100%;
+background:url("film.jpg") center/cover no-repeat;
+display:none;
+align-items:center;
+justify-content:center;
 z-index:5;
 }
 
-#countVideo{
-width:100%;
-height:100%;
-object-fit:cover;
+#number{
+font-size:160px;
+color:black;
+font-weight:bold;
 }
 
 /* FLASH */
@@ -162,9 +159,9 @@ animation:float 6s linear infinite;
 }
 
 </style></head><body><div id="stage"><div id="playBtn" onclick="startExperience()"></div><div id="leftCurtain" class="curtain"></div>
-<div id="rightCurtain" class="curtain"></div><div id="countdown">
-<video id="countVideo" src="countdown.mp4"></video>
-</div></div><div id="flash"></div><div id="codeScreen"><h2>❤️Sürprize son bir adım❤️</h2><input id="codeInput" placeholder="Kod gir">
+<div id="rightCurtain" class="curtain"></div></div><div id="countdown">
+<div id="number">3</div>
+</div><div id="flash"></div><div id="codeScreen"><h2>❤️Sürprize son bir adım❤️</h2><input id="codeInput" placeholder="Kod gir">
 <button onclick="go()">Aç</button></div><script>
 
 function startExperience(){
@@ -180,16 +177,33 @@ setTimeout(startCountdown,2200);
 
 function startCountdown(){
 
-let countdown=document.getElementById("countdown");
-let video=document.getElementById("countVideo");
+let cd=document.getElementById("countdown");
+let num=document.getElementById("number");
 
-countdown.style.display="block";
+cd.style.display="flex";
 
-video.play();
+let numbers=[3,2,1];
+let i=0;
 
-video.onended=function(){
+num.innerText=numbers[i];
+
+let interval=setInterval(()=>{
+
+i++;
+
+if(i<numbers.length){
+
+num.innerText=numbers[i];
+
+}else{
+
+clearInterval(interval);
+
 flash();
+
 }
+
+},1000);
 
 }
 
@@ -210,7 +224,7 @@ showCode();
 
 function showCode(){
 
-document.getElementById("stage").style.display="none";
+document.getElementById("countdown").style.display="none";
 
 let screen=document.getElementById("codeScreen");
 screen.style.display="flex";
