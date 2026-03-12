@@ -1,12 +1,7 @@
-<!DOCTYPE html>
-<html lang="tr">
+<!DOCTYPE html><html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Bizim Şarkımız ❤️</title>
-
-<style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Bizim Şarkımız ❤️</title><style>
 
 body{
 margin:0;
@@ -14,109 +9,69 @@ background:black;
 color:white;
 font-family:Arial;
 text-align:center;
-overflow:hidden;
-}
-
-/* kalpler */
-
-.heart{
-position:fixed;
-color:red;
-font-size:20px;
-animation:fall 6s linear infinite;
-}
-
-@keyframes fall{
-0%{transform:translateY(-100px)}
-100%{transform:translateY(110vh)}
 }
 
 .container{
-position:absolute;
-top:50%;
-left:50%;
-transform:translate(-50%,-50%);
-width:90%;
-max-width:400px;
-padding:30px;
-border-radius:25px;
-background:black;
-box-shadow:0 0 40px red;
+margin-top:80px;
 }
 
 input{
-width:90%;
 padding:15px;
 font-size:18px;
-border-radius:15px;
+width:250px;
+border-radius:10px;
 border:none;
-margin-top:10px;
 }
 
 button{
+padding:15px 30px;
+font-size:18px;
 margin-top:20px;
-padding:15px 40px;
-font-size:20px;
 border:none;
-border-radius:30px;
-background:#ff4d88;
-color:white;
+border-radius:20px;
+background:pink;
 cursor:pointer;
 }
 
 #error{
 color:red;
 margin-top:15px;
-font-size:18px;
 display:none;
+font-size:18px;
 }
 
 #foto{
 display:none;
-width:90%;
-margin-top:20px;
+margin-top:30px;
+width:80%;
+max-width:350px;
 border-radius:20px;
 }
 
-</style>
-</head>
+#play{
+display:none;
+}
 
-<body>
+</style></head><body><h1>Bizim Şarkımız ❤️</h1><div class="container"><input id="kod" placeholder="Kodu gir"><br><button onclick="kontrol()">Aç</button>
 
-<h1>Bizim Şarkımız ❤️</h1>
+<div id="error">Yanlış Kod</div><img id="foto"
+src="https://res.cloudinary.com/dbtlit7hz/image/upload/v1773339119/clients/x7Kp92Lm.jpg">
 
-<div class="container">
-
-<input id="code" placeholder="Kodu gir">
-
-<br>
-
-<button onclick="kontrol()">Aç</button>
-
-<br>
-
-<img id="foto" src="https://res.cloudinary.com/dbtlit7hz/image/upload/v1/clients/x7Kp92Lm/wedding.jpg">
-
-<div id="error">Yanlış Kod</div>
+<br><button id="play" onclick="cal()">Şarkıyı Çal 🎵</button>
 
 <audio id="music">
 <source src="codes/x7Kp92Lm/sarki.mp3" type="audio/mpeg">
-</audio>
-
-</div>
-
-<script>
+</audio></div><script>
 
 function kontrol(){
 
-let kod=document.getElementById("code").value.trim()
+let kod=document.getElementById("kod").value.trim()
 
 if(kod==="x7Kp92Lm"){
 
 document.getElementById("foto").style.display="block"
+document.getElementById("play").style.display="inline-block"
 document.getElementById("error").style.display="none"
-
-document.getElementById("music").play()
 
 }else{
 
@@ -126,22 +81,11 @@ document.getElementById("error").style.display="block"
 
 }
 
-/* kalp animasyonu */
+function cal(){
 
-for(let i=0;i<30;i++){
-
-let kalp=document.createElement("div")
-kalp.className="heart"
-kalp.innerHTML="❤"
-
-kalp.style.left=Math.random()*100+"%"
-kalp.style.animationDuration=(3+Math.random()*5)+"s"
-
-document.body.appendChild(kalp)
+document.getElementById("music").play()
 
 }
 
-</script>
-
-</body>
+</script></body>
 </html>
