@@ -1,11 +1,8 @@
-<!DOCTYPE html>
-<html lang="tr">
+<!DOCTYPE html><html lang="tr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bizim Şarkımız</title>
-
-<style>
+<title>Bizim Şarkımız ❤️</title><style>
 
 body{
 background:black;
@@ -43,42 +40,36 @@ font-size:20px;
 cursor:pointer;
 }
 
-</style>
-</head>
+.error{
+margin-top:30px;
+color:red;
+font-size:18px;
+}
 
-<body>
-
-<h1>Bizim Şarkımız ❤️</h1>
-
-<div class="container">
-
-<img id="photo">
-
-<br>
-
-<button onclick="playSong()">Şarkıyı Başlat 🎵</button>
+</style></head><body><h1>Bizim Şarkımız ❤️</h1><div class="container"><img id="photo"><br><button onclick="playSong()">Şarkıyı Başlat 🎵</button>
 
 <audio id="song"></audio>
 
-</div>
-
-<script>
+<div id="error" class="error"></div></div><script>
 
 const params = new URLSearchParams(window.location.search);
 const code = params.get("code");
 
-const photoUrl = "https://res.cloudinary.com/dbtlit7hz/image/upload/" + code + ".jpg";
+if(!code){
+document.getElementById("error").innerText="Kod bulunamadı";
+}else{
+
+const photoUrl = "https://res.cloudinary.com/dbtlit7hz/image/upload/clients/" + code + ".jpg";
 const songUrl = "codes/" + code + "/sarki.mp3";
 
 document.getElementById("photo").src = photoUrl;
-
 document.getElementById("song").src = songUrl;
+
+}
 
 function playSong(){
 document.getElementById("song").play();
 }
 
-</script>
-
-</body>
+</script></body>
 </html>
