@@ -1,4 +1,5 @@
-<!DOCTYPE html><html lang="tr">
+<!DOCTYPE html>
+<html lang="tr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -232,10 +233,6 @@ animation:float 6s linear infinite;
 
 <button onclick="playMusic()">Şarkıyı Çal 🎵</button>
 
-<audio id="music">
-<source id="musicSource" type="audio/mpeg">
-</audio>
-
 </div>
 
 <div id="heartLayer"></div>
@@ -314,15 +311,12 @@ let code=document.getElementById("codeInput").value.trim();
 if(code==="") return;
 
 let photoURL="https://res.cloudinary.com/dbtlit7hz/image/upload/clients/"+code+"/"+code+".jpg";
-let musicURL="codes/"+code+"/sarki.mp3";
 
 let img=new Image();
 
 img.onload=function(){
 
 document.getElementById("photo").src=photoURL;
-document.getElementById("musicSource").src=musicURL;
-document.getElementById("music").load();
 
 document.getElementById("codeScreen").style.display="none";
 document.getElementById("result").style.display="flex";
@@ -341,7 +335,8 @@ img.src=photoURL;
 
 function playMusic(){
 
-document.getElementById("music").play();
+// YouTube linkine yönlendir
+window.open("https://youtu.be/06-XXOTP3Gc?si=4id6u8cy-wv1aC2g", "_blank");
 
 }
 
