@@ -28,7 +28,7 @@ button{padding:12px 25px;margin-top:10px;border:none;border-radius:20px;backgrou
 #heartLayer{position:fixed;width:100%;height:100%;top:0;left:0;pointer-events:none;overflow:hidden;z-index:999;}
 .heart{position:absolute;color:red;font-size:22px;animation:float 6s linear infinite;}
 @keyframes float{0%{transform:translateY(100vh);opacity:1}100%{transform:translateY(-10vh);opacity:0}}
-#overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);color:white;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:200;font-size:28px;text-align:center;padding:20px;}
+#overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);color:white;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:200;font-size:28px;text-align:center;padding:20px;}
 .fadeMsg{animation:fadeText 3s;}
 @keyframes fadeText{0%{opacity:0;transform:translateY(20px)}50%{opacity:1}100%{opacity:0;transform:translateY(-20px)}}
 </style>
@@ -122,7 +122,7 @@ function go(){
 }
 
 function playMusic(){
-  let id=youtubeLinks[currentCode];
+  const id=youtubeLinks[currentCode];
   if(!id){alert("Şarkı yok");return;}
 
   document.getElementById("result").style.display="none";
@@ -130,7 +130,7 @@ function playMusic(){
   document.getElementById("musicBox").style.display="block";
   videoOpen=true;
 
-  // Video arka planda başlasın
+  // Video hemen arka planda başlasın
   player=new YT.Player('player',{videoId:id,events:{'onStateChange':onPlayerStateChange}});
 
   const overlayText=document.getElementById("overlayText");
@@ -152,7 +152,7 @@ function playMusic(){
     msgIdx++; if(msgIdx>=overlayMsgs.length) clearInterval(msgInterval);
   },5000);
 
-  // 10 sn sonra overlay kalkıyor
+  // 10 sn sonra overlay kalkar, video ortaya çıkar
   setTimeout(()=>{
     clearInterval(heartsInterval);
     document.getElementById("overlay").style.display="none";
