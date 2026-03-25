@@ -23,14 +23,14 @@ button{padding:12px 25px;margin-top:10px;border:none;border-radius:20px;backgrou
 #error{color:red;margin-top:10px;display:none;}
 #result{display:none;position:fixed;width:100%;height:100%;background:black;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:20px;box-sizing:border-box;}
 #photo{width:80%;max-width:400px;border-radius:20px;margin-bottom:10px;}
-#musicBox{display:none;position:fixed;top:0;left:0;width:100%;height:100%;z-index:50;}
+#musicBox{position:fixed;top:0;left:0;width:100%;height:100%;z-index:50;opacity:0;pointer-events:none;}
 #player{width:100%;height:100%;}
+#overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);color:white;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:200;font-size:28px;text-align:center;padding:20px;}
+.fadeMsg{animation:fadeText 3s;}
+@keyframes fadeText{0%{opacity:0;transform:translateY(20px)}50%{opacity:1}100%{opacity:0;transform:translateY(-20px)}}
 #heartLayer{position:fixed;width:100%;height:100%;top:0;left:0;pointer-events:none;overflow:hidden;z-index:999;}
 .heart{position:absolute;color:red;font-size:22px;animation:float 6s linear infinite;}
 @keyframes float{0%{transform:translateY(100vh);opacity:1}100%{transform:translateY(-10vh);opacity:0}}
-#overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.7);color:white;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:200;font-size:28px;text-align:center;padding:20px;}
-.fadeMsg{animation:fadeText 3s;}
-@keyframes fadeText{0%{opacity:0;transform:translateY(20px)}50%{opacity:1}100%{opacity:0;transform:translateY(-20px)}}
 </style>
 </head>
 <body>
@@ -98,7 +98,7 @@ function showCode(){
   document.getElementById("stage").style.display="none";
   document.getElementById("codeScreen").style.display="flex";
   setInterval(()=>{
-    let h=document.createElement("div");
+    const h=document.createElement("div");
     h.className="heart";h.innerText="❤";
     h.style.left=Math.random()*100+"%";
     document.getElementById("heartLayer").appendChild(h);
@@ -127,40 +127,40 @@ function playMusic(){
 
   document.getElementById("result").style.display="none";
   document.getElementById("overlay").style.display="flex";
-  document.getElementById("musicBox").style.display="block";
+  document.getElementById("musicBox").style.opacity=0; // gizli ama DOM'da
+
   videoOpen=true;
 
-  // Video hemen arka planda başlasın
-  player=new YT.Player('player',{videoId:id,events:{'onStateChange':onPlayerStateChange}});
+  // Video hemen başlasın arka planda
+  player=new YT.Player('player',{videoId:id,playerVars:{autoplay:1,controls:0},events:{'onStateChange':onPlayerStateChange}});
 
   const overlayText=document.getElementById("overlayText");
   const overlayMsgs=["Seninle her an bir mucize ❤️","Bu şarkı sadece sana..."];
   let msgIdx=0;
 
-  // Kalpler uçuyor
   const heartsInterval=setInterval(()=>{
-    let h=document.createElement("div");h.className="heart";h.innerText="❤";
+    const h=document.createElement("div");h.className="heart";h.innerText="❤";
     h.style.left=Math.random()*100+"%";
     document.getElementById("heartLayer").appendChild(h);
     setTimeout(()=>h.remove(),6000);
   },300);
 
-  // Mesaj geçişleri
   const msgInterval=setInterval(()=>{
     overlayText.innerHTML=overlayMsgs[msgIdx];
     overlayText.className="fadeMsg";
     msgIdx++; if(msgIdx>=overlayMsgs.length) clearInterval(msgInterval);
   },5000);
 
-  // 10 sn sonra overlay kalkar, video ortaya çıkar
+  // 10 saniye sonra overlay kalkar, video görünür olur
   setTimeout(()=>{
     clearInterval(heartsInterval);
     document.getElementById("overlay").style.display="none";
+    document.getElementById("musicBox").style.opacity=1;
+    document.getElementById("musicBox").style.pointerEvents="auto";
   },10000);
 }
 
 function onPlayerStateChange(e){if(e.data===0) closeVideo(false);}
-
 function closeVideo(fromBack){
   document.getElementById("musicBox").style.display="none";
   document.getElementById("result").style.display="flex";
