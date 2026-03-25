@@ -23,7 +23,7 @@ button{padding:12px 25px;margin-top:10px;border:none;border-radius:20px;backgrou
 #error{color:red;margin-top:10px;display:none;}
 #result{display:none;position:fixed;width:100%;height:100%;background:black;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:20px;box-sizing:border-box;}
 #photo{width:80%;max-width:400px;border-radius:20px;margin-bottom:10px;}
-#musicBox{position:fixed;top:0;left:0;width:100%;height:100%;z-index:50;opacity:0;pointer-events:none;}
+#musicBox{position:fixed;top:0;left:0;width:100%;height:100%;z-index:50;}
 #player{width:100%;height:100%;}
 #overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);color:white;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:200;font-size:28px;text-align:center;padding:20px;}
 .fadeMsg{animation:fadeText 3s;}
@@ -81,15 +81,15 @@ function startExperience(){
 }
 
 function startCountdown(){
-  const c=document.getElementById("countdown");
-  const v=document.getElementById("countVideo");
+  let c=document.getElementById("countdown");
+  let v=document.getElementById("countVideo");
   c.style.display="block";
   v.play();
   v.onended=()=>flash();
 }
 
 function flash(){
-  const f=document.getElementById("flash");
+  let f=document.getElementById("flash");
   f.style.opacity="1";
   setTimeout(()=>{f.style.opacity="0";showCode();},300);
 }
@@ -98,8 +98,7 @@ function showCode(){
   document.getElementById("stage").style.display="none";
   document.getElementById("codeScreen").style.display="flex";
   setInterval(()=>{
-    const h=document.createElement("div");
-    h.className="heart";h.innerText="❤";
+    let h=document.createElement("div"); h.className="heart"; h.innerText="❤";
     h.style.left=Math.random()*100+"%";
     document.getElementById("heartLayer").appendChild(h);
     setTimeout(()=>h.remove(),6000);
@@ -110,8 +109,8 @@ function go(){
   let code=document.getElementById("codeInput").value.trim();
   if(!code) return;
   currentCode=code;
-  const photoURL="https://res.cloudinary.com/dbtlit7hz/image/upload/clients/"+code+"/"+code+".jpg";
-  const img=new Image();
+  let photoURL="https://res.cloudinary.com/dbtlit7hz/image/upload/clients/"+code+"/"+code+".jpg";
+  let img=new Image();
   img.onload=()=>{
     document.getElementById("photo").src=photoURL;
     document.getElementById("codeScreen").style.display="none";
@@ -122,45 +121,54 @@ function go(){
 }
 
 function playMusic(){
-  const id=youtubeLinks[currentCode];
+  let id=youtubeLinks[currentCode];
   if(!id){alert("Şarkı yok");return;}
-
   document.getElementById("result").style.display="none";
   document.getElementById("overlay").style.display="flex";
-  document.getElementById("musicBox").style.opacity=0; // gizli ama DOM'da
-
   videoOpen=true;
 
-  // Video hemen başlasın arka planda
-  player=new YT.Player('player',{videoId:id,playerVars:{autoplay:1,controls:0},events:{'onStateChange':onPlayerStateChange}});
-
   const overlayText=document.getElementById("overlayText");
-  const overlayMsgs=["Seninle her an bir mucize ❤️","Bu şarkı sadece sana..."];
+  const overlayMsgs=["❤️SÜRPRİZİMLE SENİ MUTLU EDEBİLDİYSEN❤️","❤️NE MUTLU BANA❤️"];
   let msgIdx=0;
 
+  // Kalpler
   const heartsInterval=setInterval(()=>{
-    const h=document.createElement("div");h.className="heart";h.innerText="❤";
+    let h=document.createElement("div"); h.className="heart"; h.innerText="❤";
     h.style.left=Math.random()*100+"%";
     document.getElementById("heartLayer").appendChild(h);
     setTimeout(()=>h.remove(),6000);
   },300);
 
+  // Mesaj geçişleri
   const msgInterval=setInterval(()=>{
     overlayText.innerHTML=overlayMsgs[msgIdx];
     overlayText.className="fadeMsg";
-    msgIdx++; if(msgIdx>=overlayMsgs.length) clearInterval(msgInterval);
+    msgIdx=(msgIdx+1)%overlayMsgs.length;
   },5000);
 
-  // 10 saniye sonra overlay kalkar, video görünür olur
+  // YouTube arka planda başlat, opacity 0
+  player=new YT.Player('player',{
+    videoId:id,
+    playerVars:{autoplay:1,controls:0},
+    events:{
+      'onReady':function(e){
+        e.target.setVolume(50);
+        document.getElementById("musicBox").style.opacity="1";
+      },
+      'onStateChange':onPlayerStateChange
+    }
+  });
+
+  // Overlay süresi = 13 sn
   setTimeout(()=>{
     clearInterval(heartsInterval);
+    clearInterval(msgInterval);
     document.getElementById("overlay").style.display="none";
-    document.getElementById("musicBox").style.opacity=1;
-    document.getElementById("musicBox").style.pointerEvents="auto";
-  },10000);
+  },13000);
 }
 
 function onPlayerStateChange(e){if(e.data===0) closeVideo(false);}
+
 function closeVideo(fromBack){
   document.getElementById("musicBox").style.display="none";
   document.getElementById("result").style.display="flex";
