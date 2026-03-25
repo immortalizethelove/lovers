@@ -80,13 +80,10 @@ button{padding:12px 25px;margin-top:10px;border:none;border-radius:20px;backgrou
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
-const youtubeLinks={
-  "x7Kp92Lm":"06-XXOTP3Gc",
-  "tAmGkL87":"_eij6Vs7FGo"
-};
+const youtubeLinks={"x7Kp92Lm":"06-XXOTP3Gc","tAmGkL87":"_eij6Vs7FGo"};
 let currentCode="", player, videoOpen=false;
 
-window.addEventListener("popstate",function(){if(videoOpen) closeVideo(true);});
+window.addEventListener("popstate",()=>{if(videoOpen) closeVideo(true);});
 
 function startExperience(){
   document.getElementById("playBtn").style.display="none";
@@ -100,7 +97,7 @@ function startCountdown(){
   let v=document.getElementById("countVideo");
   c.style.display="block";
   v.play();
-  v.onended=function(){flash();}
+  v.onended=()=>flash();
 }
 
 function flash(){
@@ -112,11 +109,9 @@ function flash(){
 function showCode(){
   document.getElementById("stage").style.display="none";
   document.getElementById("codeScreen").style.display="flex";
-
   setInterval(()=>{
     let h=document.createElement("div");
-    h.className="heart";
-    h.innerText="❤";
+    h.className="heart";h.innerText="❤";
     h.style.left=Math.random()*100+"%";
     document.getElementById("heartLayer").appendChild(h);
     setTimeout(()=>h.remove(),6000);
@@ -125,51 +120,56 @@ function showCode(){
 
 function go(){
   let code=document.getElementById("codeInput").value.trim();
-  if(code==="") return;
+  if(!code) return;
   currentCode=code;
   let photoURL="https://res.cloudinary.com/dbtlit7hz/image/upload/clients/"+code+"/"+code+".jpg";
   let img=new Image();
-  img.onload=function(){
+  img.onload=()=>{
     document.getElementById("photo").src=photoURL;
     document.getElementById("codeScreen").style.display="none";
     document.getElementById("result").style.display="flex";
   };
-  img.onerror=function(){document.getElementById("error").style.display="block";};
+  img.onerror=()=>{document.getElementById("error").style.display="block";};
   img.src=photoURL;
 }
 
 function playMusic(){
   let id=youtubeLinks[currentCode];
   if(!id){alert("Şarkı yok");return;}
-  
   document.getElementById("result").style.display="none";
   document.getElementById("overlay").style.display="flex";
   videoOpen=true;
 
-  const overlayMsgs=[
-    "Seninle her an bir mucize ❤️",
-    "Bu şarkı sadece sana..."
-  ];
-  let idx=0;
   const overlayText=document.getElementById("overlayText");
-  
-  const msgInterval=setInterval(()=>{
-    overlayText.innerHTML=overlayMsgs[idx];
-    overlayText.className="fadeMsg";
-    idx++;
-    if(idx>=overlayMsgs.length){
-      clearInterval(msgInterval);
-      startYTVideo();
-    }
-  },5000); // 5 sn arayla mesaj geçişi
+  const overlayMsgs=["Seninle her an bir mucize ❤️","Bu şarkı sadece sana..."];
+  let msgIdx=0;
 
-  function startYTVideo(){
+  // Overlay süresince kalpler de uçuyor
+  const heartsInterval=setInterval(()=>{
+    let h=document.createElement("div");h.className="heart";h.innerText="❤";
+    h.style.left=Math.random()*100+"%";
+    document.getElementById("heartLayer").appendChild(h);
+    setTimeout(()=>h.remove(),6000);
+  },300);
+
+  // Mesaj geçişleri 5 sn arayla
+  const msgInterval=setInterval(()=>{
+    overlayText.innerHTML=overlayMsgs[msgIdx];
+    overlayText.className="fadeMsg";
+    msgIdx=(msgIdx+1)%overlayMsgs.length;
+  },5000);
+
+  // 10 sn sonra overlay kalkıp video başlasın
+  setTimeout(()=>{
+    clearInterval(heartsInterval);
+    clearInterval(msgInterval);
     document.getElementById("overlay").style.display="none";
+
     player=new YT.Player('player',{
       videoId:id,
       events:{'onStateChange':onPlayerStateChange}
     });
-  }
+  },10000); // 10 saniye
 }
 
 function onPlayerStateChange(e){if(e.data===0) closeVideo(false);}
@@ -179,7 +179,7 @@ function closeVideo(fromBack){
   document.getElementById("result").style.display="flex";
   if(player){player.destroy();player=null;}
   videoOpen=false;
-  if(!fromBack){history.back();}
+  if(!fromBack) history.back();
 }
 </script>
 </body>
