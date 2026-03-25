@@ -21,8 +21,10 @@ body{margin:0;background:black;overflow:hidden;font-family:Arial;}
 input{padding:12px;font-size:18px;border:none;border-radius:8px;margin-top:10px;}
 button{padding:12px 25px;margin-top:10px;border:none;border-radius:20px;background:#e91e63;color:white;font-size:18px;cursor:pointer;}
 #error{color:red;margin-top:10px;display:none;}
-#result{display:none;position:fixed;width:100%;height:100%;background:black;flex-direction:column;align-items:center;justify-content:center;}
-#photo{width:80%;max-width:400px;border-radius:20px;}
+#result{display:none;position:fixed;width:100%;height:100%;background:black;flex-direction:column;align-items:center;justify-content:flex-start; padding-top:20px; box-sizing:border-box;}
+#photo{width:80%;max-width:400px;border-radius:20px;margin-bottom:10px;}
+#musicBox{display:none;width:100%;flex:1 1 auto;}
+#musicBox iframe{width:100%;height:100%;border:none;border-radius:0;}
 #heartLayer{position:fixed;width:100%;height:100%;top:0;left:0;pointer-events:none;overflow:hidden;}
 .heart{position:absolute;color:red;font-size:22px;animation:float 6s linear infinite;}
 @keyframes float{0%{transform:translateY(100vh);opacity:1}100%{transform:translateY(-10vh);opacity:0}}
@@ -49,8 +51,11 @@ button{padding:12px 25px;margin-top:10px;border:none;border-radius:20px;backgrou
 </div>
 
 <div id="result">
-<img id="photo"><br><br>
-<button onclick="playMusic()">Şarkıyı Çal 🎵</button>
+<img id="photo">
+<button onclick="playMusic()" style="margin-bottom:5px;">Şarkıyı Çal 🎵</button>
+<div id="musicBox">
+<iframe id="ytPlayer" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+</div>
 </div>
 
 <div id="heartLayer"></div>
@@ -141,10 +146,11 @@ function go(){
 }
 
 function playMusic(){
-  // Girilen koda özel YouTube linkine yönlendir
   let url = youtubeLinks[currentCode];
   if(url){
-    window.open(url,"_blank");
+    let embedUrl = url.replace("https://youtu.be/", "https://www.youtube.com/embed/") + "?autoplay=1";
+    document.getElementById("musicBox").style.display = "flex";
+    document.getElementById("ytPlayer").src = embedUrl;
   } else {
     alert("Bu koda ait şarkı bulunamadı!");
   }
