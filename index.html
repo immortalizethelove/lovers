@@ -24,160 +24,162 @@ button{padding:12px 25px;margin-top:10px;border:none;border-radius:20px;backgrou
 #result{display:none;position:fixed;width:100%;height:100%;background:black;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:20px;box-sizing:border-box;}
 #photo{width:80%;max-width:400px;border-radius:20px;margin-bottom:10px;}
 #musicBox{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:black;z-index:50;}
-#player{width:100%;height:100%;filter:blur(20px);transition:1.2s;}
+#player{width:100%;height:100%;}
 #heartLayer{position:fixed;width:100%;height:100%;top:0;left:0;pointer-events:none;overflow:hidden;z-index:999;}
 .heart{position:absolute;color:red;font-size:22px;animation:float 6s linear infinite;}
 @keyframes float{0%{transform:translateY(100vh);opacity:1}100%{transform:translateY(-10vh);opacity:0}}
-#introOverlay{position:fixed;top:0;left:0;width:100%;height:100%;background:black;color:white;display:none;align-items:center;justify-content:center;flex-direction:column;z-index:200;font-size:28px;text-align:center;padding:20px;box-sizing:border-box;}
-.fade{animation:fadeText 3s;}
-@keyframes fadeText{0%{opacity:0;transform:translateY(20px)}50%{opacity:1}100%{opacity:0;transform:translateY(-20px)}}
+#overlay{
+  position:fixed;
+  top:0;left:0;width:100%;height:100%;
+  background:black;color:white;
+  display:none;
+  flex-direction:column;
+  align-items:center;justify-content:center;
+  z-index:200;font-size:28px;text-align:center;padding:20px;
+}
+.fadeMsg{animation:fadeText 3s;}
+@keyframes fadeText{
+0%{opacity:0;transform:translateY(20px)}
+50%{opacity:1}
+100%{opacity:0;transform:translateY(-20px)}
+}
 </style>
 </head>
 <body>
 
 <div id="stage">
-<div id="playBtn" onclick="startExperience()"></div>
-<div id="leftCurtain" class="curtain"></div>
-<div id="rightCurtain" class="curtain"></div>
-<div id="countdown"><video id="countVideo" src="countdown.mp4"></video></div>
+  <div id="playBtn" onclick="startExperience()"></div>
+  <div id="leftCurtain" class="curtain"></div>
+  <div id="rightCurtain" class="curtain"></div>
+  <div id="countdown"><video id="countVideo" src="countdown.mp4"></video></div>
 </div>
 
 <div id="flash"></div>
 
 <div id="codeScreen">
-<h2>❤️Sürprize son bir adım❤️</h2>
-<input id="codeInput" placeholder="Kod gir">
-<button onclick="go()">Aç</button>
-<div id="error">Yanlış Kod</div>
+  <h2>❤️Sürprize son bir adım❤️</h2>
+  <input id="codeInput" placeholder="Kod gir">
+  <button onclick="go()">Aç</button>
+  <div id="error">Yanlış Kod</div>
 </div>
 
 <div id="result">
-<img id="photo">
-<button onclick="playMusic()">Şarkıyı Çal 🎵</button>
+  <img id="photo">
+  <button onclick="playMusic()">Şarkıyı Çal 🎵</button>
 </div>
 
 <div id="musicBox">
-<div id="player"></div>
+  <div id="player"></div>
 </div>
 
-<div id="introOverlay">
-<div id="introText"></div>
+<div id="overlay">
+  <div id="overlayText"></div>
 </div>
 
 <div id="heartLayer"></div>
-<audio id="introSound" src="intro.mp3"></audio>
 
 <script src="https://www.youtube.com/iframe_api"></script>
 <script>
 const youtubeLinks={
-"x7Kp92Lm":"06-XXOTP3Gc",
-"tAmGkL87":"_eij6Vs7FGo"
+  "x7Kp92Lm":"06-XXOTP3Gc",
+  "tAmGkL87":"_eij6Vs7FGo"
 };
 let currentCode="", player, videoOpen=false;
 
-/* GERİ TUŞU */
 window.addEventListener("popstate",function(){if(videoOpen) closeVideo(true);});
 
 function startExperience(){
-document.getElementById("playBtn").style.display="none";
-document.getElementById("leftCurtain").classList.add("openLeft");
-document.getElementById("rightCurtain").classList.add("openRight");
-setTimeout(startCountdown,2200);
+  document.getElementById("playBtn").style.display="none";
+  document.getElementById("leftCurtain").classList.add("openLeft");
+  document.getElementById("rightCurtain").classList.add("openRight");
+  setTimeout(startCountdown,2200);
 }
 
 function startCountdown(){
-let c=document.getElementById("countdown");
-let v=document.getElementById("countVideo");
-c.style.display="block";
-v.play();
-v.onended=function(){flash();}
+  let c=document.getElementById("countdown");
+  let v=document.getElementById("countVideo");
+  c.style.display="block";
+  v.play();
+  v.onended=function(){flash();}
 }
 
 function flash(){
-let f=document.getElementById("flash");
-f.style.opacity="1";
-setTimeout(()=>{f.style.opacity="0";showCode();},300);
+  let f=document.getElementById("flash");
+  f.style.opacity="1";
+  setTimeout(()=>{f.style.opacity="0";showCode();},300);
 }
 
 function showCode(){
-document.getElementById("stage").style.display="none";
-document.getElementById("codeScreen").style.display="flex";
-setInterval(()=>{
-let h=document.createElement("div");
-h.className="heart";
-h.innerText="❤";
-h.style.left=Math.random()*100+"%";
-document.getElementById("heartLayer").appendChild(h);
-setTimeout(()=>h.remove(),6000);
-},300);
+  document.getElementById("stage").style.display="none";
+  document.getElementById("codeScreen").style.display="flex";
+
+  setInterval(()=>{
+    let h=document.createElement("div");
+    h.className="heart";
+    h.innerText="❤";
+    h.style.left=Math.random()*100+"%";
+    document.getElementById("heartLayer").appendChild(h);
+    setTimeout(()=>h.remove(),6000);
+  },300);
 }
 
 function go(){
-let code=document.getElementById("codeInput").value.trim();
-if(code==="") return;
-currentCode=code;
-let photoURL="https://res.cloudinary.com/dbtlit7hz/image/upload/clients/"+code+"/"+code+".jpg";
-let img=new Image();
-img.onload=function(){
-document.getElementById("photo").src=photoURL;
-document.getElementById("codeScreen").style.display="none";
-document.getElementById("result").style.display="flex";
-};
-img.onerror=function(){document.getElementById("error").style.display="block";};
-img.src=photoURL;
+  let code=document.getElementById("codeInput").value.trim();
+  if(code==="") return;
+  currentCode=code;
+  let photoURL="https://res.cloudinary.com/dbtlit7hz/image/upload/clients/"+code+"/"+code+".jpg";
+  let img=new Image();
+  img.onload=function(){
+    document.getElementById("photo").src=photoURL;
+    document.getElementById("codeScreen").style.display="none";
+    document.getElementById("result").style.display="flex";
+  };
+  img.onerror=function(){document.getElementById("error").style.display="block";};
+  img.src=photoURL;
 }
 
 function playMusic(){
-let id=youtubeLinks[currentCode];
-if(!id){alert("Şarkı yok");return;}
+  let id=youtubeLinks[currentCode];
+  if(!id){alert("Şarkı yok");return;}
+  
+  document.getElementById("result").style.display="none";
+  document.getElementById("overlay").style.display="flex";
+  videoOpen=true;
 
-document.getElementById("result").style.display="none";
-document.getElementById("musicBox").style.display="block";
-history.pushState({video:true},"");
-videoOpen=true;
+  const overlayMsgs=[
+    "Seninle her an bir mucize ❤️",
+    "Bu şarkı sadece sana..."
+  ];
+  let idx=0;
+  const overlayText=document.getElementById("overlayText");
+  
+  const msgInterval=setInterval(()=>{
+    overlayText.innerHTML=overlayMsgs[idx];
+    overlayText.className="fadeMsg";
+    idx++;
+    if(idx>=overlayMsgs.length){
+      clearInterval(msgInterval);
+      startYTVideo();
+    }
+  },5000); // 5 sn arayla mesaj geçişi
 
-/* Romantik overlay ve intro müzik */
-let introOverlay=document.getElementById("introOverlay");
-let introText=document.getElementById("introText");
-let introSound=document.getElementById("introSound");
-introOverlay.style.display="flex";
-introText.innerHTML="Seninle her an bir mucize ❤️";
-introText.className="fade";
-introSound.volume=0.25;
-introSound.play();
-
-setTimeout(()=>{
-introText.innerHTML="Bu şarkı sadece sana...";
-introText.className="fade";
-},3000);
-
-setTimeout(()=>{startYTVideo(id,introOverlay,introSound);},6000);
+  function startYTVideo(){
+    document.getElementById("overlay").style.display="none";
+    player=new YT.Player('player',{
+      videoId:id,
+      events:{'onStateChange':onPlayerStateChange}
+    });
+  }
 }
 
-function startYTVideo(id,introOverlay,introSound){
-player=new YT.Player('player',{
-videoId:id,
-events:{
-'onReady':function(e){
-let playerDiv=document.getElementById("player");
-setTimeout(()=>{playerDiv.style.filter="blur(0px)";},500);
-introOverlay.style.display="none";
-introSound.pause();
-introSound.currentTime=0;
-},
-'onStateChange':onPlayerStateChange
-}
-});
-}
-
-function onPlayerStateChange(e){if(e.data===0){closeVideo(false);}}
+function onPlayerStateChange(e){if(e.data===0) closeVideo(false);}
 
 function closeVideo(fromBack){
-document.getElementById("musicBox").style.display="none";
-document.getElementById("result").style.display="flex";
-if(player){player.destroy();player=null;}
-videoOpen=false;
-if(!fromBack){history.back();}
+  document.getElementById("musicBox").style.display="none";
+  document.getElementById("result").style.display="flex";
+  if(player){player.destroy();player=null;}
+  videoOpen=false;
+  if(!fromBack){history.back();}
 }
 </script>
 </body>
