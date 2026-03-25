@@ -37,6 +37,7 @@ width:100%;
 height:100%;
 background:black;
 color:white;
+display:flex;
 align-items:center;
 justify-content:center;
 z-index:60;
@@ -174,19 +175,25 @@ if(!id){alert("Şarkı yok");return;}
 document.getElementById("loading").style.display="flex";
 document.getElementById("photo").classList.add("blur");
 
-setTimeout(()=>{
+history.pushState({video:true},"");
+videoOpen=true;
+
+/* Video hazır olana kadar bekle ve sonra göster */
+function startYT(){
+player.loadVideoById({
+videoId: id,
+suggestedQuality: "default"
+});
+
+let readyInterval=setInterval(()=>{
+if(player && player.getPlayerState){ 
+if(player.getPlayerState()!==-1){ // video hazır
+clearInterval(readyInterval);
 
 document.getElementById("result").style.display="none";
 document.getElementById("musicBox").style.display="block";
 document.getElementById("loading").style.display="none";
 
-history.pushState({video:true},"");
-
-videoOpen=true;
-
-player.loadVideoById(id);
-
-/* SES FADE */
 let vol=0;
 player.setVolume(0);
 let fade=setInterval(()=>{
@@ -196,8 +203,12 @@ vol+=5;
 },120);
 
 player.addEventListener("onStateChange",onPlayerStateChange);
+}
+}
+},200);
+}
 
-},1000);
+startYT();
 }
 
 function onPlayerStateChange(e){
@@ -211,7 +222,7 @@ document.getElementById("musicBox").style.display="none";
 document.getElementById("result").style.display="flex";
 document.getElementById("photo").classList.remove("blur");
 
-player.stopVideo();
+if(player) player.stopVideo();
 
 videoOpen=false;
 
