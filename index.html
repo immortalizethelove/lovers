@@ -98,7 +98,8 @@ function showCode(){
   document.getElementById("stage").style.display="none";
   document.getElementById("codeScreen").style.display="flex";
   setInterval(()=>{
-    let h=document.createElement("div");h.className="heart";h.innerText="❤";
+    let h=document.createElement("div");
+    h.className="heart";h.innerText="❤";
     h.style.left=Math.random()*100+"%";
     document.getElementById("heartLayer").appendChild(h);
     setTimeout(()=>h.remove(),6000);
@@ -120,7 +121,6 @@ function go(){
   img.src=photoURL;
 }
 
-// Overlay ile video başlatma düzenlendi
 function playMusic(){
   let id=youtubeLinks[currentCode];
   if(!id){alert("Şarkı yok");return;}
@@ -131,21 +131,9 @@ function playMusic(){
 
   const overlayText=document.getElementById("overlayText");
   const overlayMsgs=["Seninle her an bir mucize ❤️","Bu şarkı sadece sana..."];
-  let idx=0;
+  let msgIdx=0;
 
-  // Overlay mesajlarını sırayla ve fade ile göster
-  function showNextMsg(){
-    if(idx>=overlayMsgs.length){
-      startYTVideo(); // Tüm mesajlar gösterildiğinde video başlasın
-      return;
-    }
-    overlayText.innerHTML=overlayMsgs[idx];
-    overlayText.className="fadeMsg";
-    idx++;
-    setTimeout(showNextMsg,3000); // 3 sn sonra bir sonraki
-  }
-
-  // Kalpler overlay boyunca uçacak
+  // Kalpler uçuyor
   const heartsInterval=setInterval(()=>{
     let h=document.createElement("div");h.className="heart";h.innerText="❤";
     h.style.left=Math.random()*100+"%";
@@ -153,13 +141,25 @@ function playMusic(){
     setTimeout(()=>h.remove(),6000);
   },300);
 
-  function startYTVideo(){
+  // Mesaj geçişleri
+  const msgInterval=setInterval(()=>{
+    overlayText.innerHTML=overlayMsgs[msgIdx];
+    overlayText.className="fadeMsg";
+    msgIdx++;
+    if(msgIdx>=overlayMsgs.length) clearInterval(msgInterval);
+  },5000);
+
+  // 10 saniye sonra overlay kalkar ve video başlar
+  setTimeout(()=>{
     clearInterval(heartsInterval);
     document.getElementById("overlay").style.display="none";
-    player=new YT.Player('player',{videoId:id,events:{'onStateChange':onPlayerStateChange}});
-  }
+    document.getElementById("musicBox").style.display="block";
 
-  showNextMsg();
+    player=new YT.Player('player',{
+      videoId:id,
+      events:{'onStateChange':onPlayerStateChange}
+    });
+  },10000);
 }
 
 function onPlayerStateChange(e){if(e.data===0) closeVideo(false);}
