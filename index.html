@@ -7,23 +7,10 @@ body{margin:0;background:black;overflow:hidden;font-family:Arial;}
 
 #stage{position:fixed;width:100%;height:100%;background:black;display:flex;align-items:center;justify-content:center;}
 
-#playBtn{
-position:absolute;z-index:20;width:120px;height:120px;background:black;border-radius:50%;
-display:flex;align-items:center;justify-content:center;cursor:pointer;
-box-shadow:0 0 30px rgba(0,0,0,0.8);
-}
-#playBtn:after{
-content:"";border-left:35px solid white;border-top:20px solid transparent;border-bottom:20px solid transparent;margin-left:6px;
-}
+#playBtn{position:absolute;z-index:20;width:120px;height:120px;background:black;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 30px rgba(0,0,0,0.8);}
+#playBtn:after{content:"";border-left:35px solid white;border-top:20px solid transparent;border-bottom:20px solid transparent;margin-left:6px;}
 
-.curtain{
-position:absolute;top:0;width:50%;height:100%;
-background-image:url("curtain.jpg");
-background-size:200% 100%;
-background-repeat:no-repeat;
-transition:2.2s ease;
-z-index:10;
-}
+.curtain{position:absolute;top:0;width:50%;height:100%;background-image:url("curtain.jpg");background-size:200% 100%;background-repeat:no-repeat;transition:2.2s ease;z-index:10;}
 #leftCurtain{left:0;background-position:left center;}
 #rightCurtain{right:0;background-position:right center;}
 .openLeft{transform:translateX(-100%);}
@@ -34,69 +21,22 @@ z-index:10;
 
 #flash{position:fixed;width:100%;height:100%;background:white;opacity:0;pointer-events:none;transition:0.3s;}
 
-#codeScreen{
-position:fixed;width:100%;height:100%;
-display:none;flex-direction:column;align-items:center;justify-content:center;
-background:black;color:white;text-align:center;
-}
+#codeScreen{position:fixed;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;background:black;color:white;text-align:center;}
 
 input{padding:12px;font-size:18px;border:none;border-radius:8px;margin-top:10px;}
 button{padding:12px 25px;margin-top:10px;border:none;border-radius:20px;background:#e91e63;color:white;font-size:18px;cursor:pointer;}
 
 #error{color:red;margin-top:10px;display:none;}
 
-#result{
-display:none;
-position:fixed;
-width:100%;
-height:100%;
-background:black;
-flex-direction:column;
-align-items:center;
-justify-content:flex-start;
-padding-top:20px;
-box-sizing:border-box;
-}
-
+#result{display:none;position:fixed;width:100%;height:100%;background:black;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:20px;box-sizing:border-box;}
 #photo{width:80%;max-width:400px;border-radius:20px;margin-bottom:10px;}
 
-/* FULLSCREEN VİDEO */
-#musicBox{
-display:none;
-position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
-background:black;
-z-index:50;
-align-items:center;
-justify-content:center;
-}
+#musicBox{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:black;z-index:50;}
+#player{width:100%;height:100%;}
 
-#musicBox iframe{
-width:100%;
-height:100%;
-border:none;
-}
-
-/* 🔥 KALPLER EN ÜSTTE */
-#heartLayer{
-position:fixed;
-width:100%;
-height:100%;
-top:0;
-left:0;
-pointer-events:none;
-overflow:hidden;
-z-index:999;
-}
-
+#heartLayer{position:fixed;width:100%;height:100%;top:0;left:0;pointer-events:none;overflow:hidden;z-index:999;}
 .heart{position:absolute;color:red;font-size:22px;animation:float 6s linear infinite;}
-@keyframes float{
-0%{transform:translateY(100vh);opacity:1}
-100%{transform:translateY(-10vh);opacity:0}
-}
+@keyframes float{0%{transform:translateY(100vh);opacity:1}100%{transform:translateY(-10vh);opacity:0}}
 </style></head><body><div id="stage">
 <div id="playBtn" onclick="startExperience()"></div>
 <div id="leftCurtain" class="curtain"></div>
@@ -112,15 +52,24 @@ z-index:999;
 <img id="photo">
 <button onclick="playMusic()">Şarkıyı Çal 🎵</button>
 </div><div id="musicBox">
-<iframe id="ytPlayer" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-</div><div id="heartLayer"></div><script>
+<div id="player"></div>
+</div><div id="heartLayer"></div><script src="https://www.youtube.com/iframe_api"></script><script>
 
-const youtubeLinks = {
-"x7Kp92Lm": "https://youtu.be/06-XXOTP3Gc?si=4id6u8cy-wv1aC2g",
-"tAmGkL87": "https://youtu.be/_eij6Vs7FGo?si=3myIm4jZTN0zRck5"
+const youtubeLinks={
+"x7Kp92Lm":"06-XXOTP3Gc",
+"tAmGkL87":"_eij6Vs7FGo"
 };
 
 let currentCode="";
+let player;
+let videoOpen=false;
+
+/* ANDROID GERİ TUŞU */
+window.addEventListener("popstate",function(){
+if(videoOpen){
+closeVideo();
+}
+});
 
 function startExperience(){
 document.getElementById("playBtn").style.display="none";
@@ -140,10 +89,7 @@ v.onended=function(){flash();}
 function flash(){
 let f=document.getElementById("flash");
 f.style.opacity="1";
-setTimeout(()=>{
-f.style.opacity="0";
-showCode();
-},300);
+setTimeout(()=>{f.style.opacity="0";showCode();},300);
 }
 
 function showCode(){
@@ -183,16 +129,41 @@ img.src=photoURL;
 }
 
 function playMusic(){
-let url=youtubeLinks[currentCode];
-if(url){
-let embedUrl=url.replace("https://youtu.be/","https://www.youtube.com/embed/")+"?autoplay=1";
+let id=youtubeLinks[currentCode];
+if(!id){alert("Şarkı yok");return;}
 
 document.getElementById("result").style.display="none";
-document.getElementById("musicBox").style.display="flex";
-document.getElementById("ytPlayer").src=embedUrl;
-}else{
-alert("Bu koda ait şarkı bulunamadı!");
+document.getElementById("musicBox").style.display="block";
+
+history.pushState({video:true},"");
+
+videoOpen=true;
+
+player=new YT.Player('player',{
+videoId:id,
+events:{
+'onStateChange':onPlayerStateChange
 }
+});
+}
+
+function onPlayerStateChange(e){
+if(e.data===0){ // video bitti
+closeVideo();
+}
+}
+
+function closeVideo(){
+document.getElementById("musicBox").style.display="none";
+document.getElementById("result").style.display="flex";
+
+if(player){
+player.destroy();
+player=null;
+}
+
+videoOpen=false;
+history.back();
 }
 
 </script></body>
