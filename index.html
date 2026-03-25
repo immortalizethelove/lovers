@@ -23,6 +23,8 @@ button{padding:12px 25px;margin-top:10px;border:none;border-radius:20px;backgrou
 #error{color:red;margin-top:10px;display:none;}
 #result{display:none;position:fixed;width:100%;height:100%;background:black;flex-direction:column;align-items:center;justify-content:center;}
 #photo{width:80%;max-width:400px;border-radius:20px;}
+#musicBox{display:none;width:90%;max-width:500px;margin-top:15px;}
+#musicBox iframe{width:100%;height:280px;border:none;border-radius:15px;}
 #heartLayer{position:fixed;width:100%;height:100%;top:0;left:0;pointer-events:none;overflow:hidden;}
 .heart{position:absolute;color:red;font-size:22px;animation:float 6s linear infinite;}
 @keyframes float{0%{transform:translateY(100vh);opacity:1}100%{transform:translateY(-10vh);opacity:0}}
@@ -51,6 +53,9 @@ button{padding:12px 25px;margin-top:10px;border:none;border-radius:20px;backgrou
 <div id="result">
 <img id="photo"><br><br>
 <button onclick="playMusic()">Şarkıyı Çal 🎵</button>
+<div id="musicBox">
+<iframe id="ytPlayer" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+</div>
 </div>
 
 <div id="heartLayer"></div>
@@ -141,10 +146,12 @@ function go(){
 }
 
 function playMusic(){
-  // Girilen koda özel YouTube linkine yönlendir
   let url = youtubeLinks[currentCode];
   if(url){
-    window.open(url,"_blank");
+    // iframe için embed linke çevir
+    let embedUrl = url.replace("https://youtu.be/", "https://www.youtube.com/embed/") + "?autoplay=1";
+    document.getElementById("musicBox").style.display = "block";
+    document.getElementById("ytPlayer").src = embedUrl;
   } else {
     alert("Bu koda ait şarkı bulunamadı!");
   }
