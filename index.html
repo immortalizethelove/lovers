@@ -4,45 +4,33 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>For My Love</title><style>
 body{margin:0;background:black;overflow:hidden;font-family:Arial;}
-
 #stage{position:fixed;width:100%;height:100%;background:black;display:flex;align-items:center;justify-content:center;}
-
 #playBtn{position:absolute;z-index:20;width:120px;height:120px;background:black;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 30px rgba(0,0,0,0.8);}
 #playBtn:after{content:"";border-left:35px solid white;border-top:20px solid transparent;border-bottom:20px solid transparent;margin-left:6px;}
-
 .curtain{position:absolute;top:0;width:50%;height:100%;background-image:url("curtain.jpg");background-size:200% 100%;background-repeat:no-repeat;transition:2.2s ease;z-index:10;}
 #leftCurtain{left:0;background-position:left center;}
 #rightCurtain{right:0;background-position:right center;}
 .openLeft{transform:translateX(-100%);}
 .openRight{transform:translateX(100%);}
-
 #countdown{position:absolute;display:none;width:100%;height:100%;z-index:5;}
 #countVideo{width:100%;height:100%;object-fit:cover;}
-
 #flash{position:fixed;width:100%;height:100%;background:white;opacity:0;pointer-events:none;transition:0.3s;}
-
 #codeScreen{position:fixed;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;background:black;color:white;text-align:center;}
-
 input{padding:12px;font-size:18px;border:none;border-radius:8px;margin-top:10px;}
 button{padding:12px 25px;margin-top:10px;border:none;border-radius:20px;background:#e91e63;color:white;font-size:18px;cursor:pointer;}
-
 #error{color:red;margin-top:10px;display:none;}
-
 #result{display:none;position:fixed;width:100%;height:100%;background:black;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:20px;box-sizing:border-box;}
 #photo{width:80%;max-width:400px;border-radius:20px;margin-bottom:10px;}
-
 #musicBox{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:black;z-index:50;}
 #player{width:100%;height:100%;}
-
 #heartLayer{position:fixed;width:100%;height:100%;top:0;left:0;pointer-events:none;overflow:hidden;z-index:999;}
 .heart{position:absolute;color:red;font-size:22px;animation:float 6s linear infinite;}
 @keyframes float{0%{transform:translateY(100vh);opacity:1}100%{transform:translateY(-10vh);opacity:0}}
 </style></head><body><div id="stage">
 <div id="playBtn" onclick="startExperience()"></div>
 <div id="leftCurtain" class="curtain"></div>
-<div id="rightCurtain" class="curtain"></div><div id="countdown">
-<video id="countVideo" src="countdown.mp4"></video>
-</div>
+<div id="rightCurtain" class="curtain"></div>
+<div id="countdown"><video id="countVideo" src="countdown.mp4"></video></div>
 </div><div id="flash"></div><div id="codeScreen">
 <h2>❤️Sürprize son bir adım❤️</h2>
 <input id="codeInput" placeholder="Kod gir">
@@ -64,10 +52,10 @@ let currentCode="";
 let player;
 let videoOpen=false;
 
-/* ANDROID GERİ TUŞU */
+/* GERİ TUŞU */
 window.addEventListener("popstate",function(){
 if(videoOpen){
-closeVideo();
+closeVideo(true);
 }
 });
 
@@ -141,19 +129,17 @@ videoOpen=true;
 
 player=new YT.Player('player',{
 videoId:id,
-events:{
-'onStateChange':onPlayerStateChange
-}
+events:{'onStateChange':onPlayerStateChange}
 });
 }
 
 function onPlayerStateChange(e){
-if(e.data===0){ // video bitti
-closeVideo();
+if(e.data===0){
+closeVideo(false);
 }
 }
 
-function closeVideo(){
+function closeVideo(fromBack){
 document.getElementById("musicBox").style.display="none";
 document.getElementById("result").style.display="flex";
 
@@ -163,7 +149,11 @@ player=null;
 }
 
 videoOpen=false;
+
+/* SADECE GERİ TUŞUNDAN GELMEDİYSE history geri al */
+if(!fromBack){
 history.back();
+}
 }
 
 </script></body>
