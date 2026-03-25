@@ -1,155 +1,192 @@
-<!DOCTYPE html>
-<html lang="tr">
+<!DOCTYPE html><html lang="tr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>For My Love</title>
-<style>
+<title>For My Love</title><style>
 body{margin:0;background:black;overflow:hidden;font-family:Arial;}
+
 #stage{position:fixed;width:100%;height:100%;background:black;display:flex;align-items:center;justify-content:center;}
-#playBtn{position:absolute;z-index:20;width:120px;height:120px;background:black;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 30px rgba(0,0,0,0.8);}
-#playBtn:after{content:"";border-left:35px solid white;border-top:20px solid transparent;border-bottom:20px solid transparent;margin-left:6px;}
-.curtain{position:absolute;top:0;width:50%;height:100%;background-image:url("curtain.jpg");background-size:200% 100%;background-repeat:no-repeat;transition:2.2s ease;z-index:10;}
+
+#playBtn{
+position:absolute;z-index:20;width:120px;height:120px;background:black;border-radius:50%;
+display:flex;align-items:center;justify-content:center;cursor:pointer;
+box-shadow:0 0 30px rgba(0,0,0,0.8);
+}
+#playBtn:after{
+content:"";border-left:35px solid white;border-top:20px solid transparent;border-bottom:20px solid transparent;margin-left:6px;
+}
+
+.curtain{
+position:absolute;top:0;width:50%;height:100%;
+background-image:url("curtain.jpg");
+background-size:200% 100%;
+background-repeat:no-repeat;
+transition:2.2s ease;
+z-index:10;
+}
 #leftCurtain{left:0;background-position:left center;}
 #rightCurtain{right:0;background-position:right center;}
 .openLeft{transform:translateX(-100%);}
 .openRight{transform:translateX(100%);}
+
 #countdown{position:absolute;display:none;width:100%;height:100%;z-index:5;}
 #countVideo{width:100%;height:100%;object-fit:cover;}
+
 #flash{position:fixed;width:100%;height:100%;background:white;opacity:0;pointer-events:none;transition:0.3s;}
-#codeScreen{position:fixed;width:100%;height:100%;display:none;flex-direction:column;align-items:center;justify-content:center;background:black;color:white;text-align:center;}
+
+#codeScreen{
+position:fixed;width:100%;height:100%;
+display:none;flex-direction:column;align-items:center;justify-content:center;
+background:black;color:white;text-align:center;
+}
+
 input{padding:12px;font-size:18px;border:none;border-radius:8px;margin-top:10px;}
 button{padding:12px 25px;margin-top:10px;border:none;border-radius:20px;background:#e91e63;color:white;font-size:18px;cursor:pointer;}
+
 #error{color:red;margin-top:10px;display:none;}
-#result{display:none;position:fixed;width:100%;height:100%;background:black;flex-direction:column;align-items:center;justify-content:center;}
-#photo{width:80%;max-width:400px;border-radius:20px;}
-#heartLayer{position:fixed;width:100%;height:100%;top:0;left:0;pointer-events:none;overflow:hidden;}
+
+#result{
+display:none;
+position:fixed;
+width:100%;
+height:100%;
+background:black;
+flex-direction:column;
+align-items:center;
+justify-content:flex-start;
+padding-top:20px;
+box-sizing:border-box;
+}
+
+#photo{width:80%;max-width:400px;border-radius:20px;margin-bottom:10px;}
+
+/* 🔥 FULLSCREEN SİNEMATİK VİDEO */
+#musicBox{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:black;
+z-index:50;
+align-items:center;
+justify-content:center;
+}
+
+#musicBox iframe{
+width:100%;
+height:100%;
+border:none;
+}
+
+#heartLayer{
+position:fixed;width:100%;height:100%;
+top:0;left:0;pointer-events:none;overflow:hidden;
+}
 .heart{position:absolute;color:red;font-size:22px;animation:float 6s linear infinite;}
-@keyframes float{0%{transform:translateY(100vh);opacity:1}100%{transform:translateY(-10vh);opacity:0}}
-</style>
-</head>
-<body>
-
-<div id="stage">
-  <div id="playBtn" onclick="startExperience()"></div>
-  <div id="leftCurtain" class="curtain"></div>
-  <div id="rightCurtain" class="curtain"></div>
-  <div id="countdown">
-    <video id="countVideo" src="countdown.mp4"></video>
-  </div>
+@keyframes float{
+0%{transform:translateY(100vh);opacity:1}
+100%{transform:translateY(-10vh);opacity:0}
+}
+</style></head><body><div id="stage">
+<div id="playBtn" onclick="startExperience()"></div>
+<div id="leftCurtain" class="curtain"></div>
+<div id="rightCurtain" class="curtain"></div><div id="countdown">
+<video id="countVideo" src="countdown.mp4"></video>
 </div>
-
-<div id="flash"></div>
-
-<div id="codeScreen">
+</div><div id="flash"></div><div id="codeScreen">
 <h2>❤️Sürprize son bir adım❤️</h2>
 <input id="codeInput" placeholder="Kod gir">
 <button onclick="go()">Aç</button>
 <div id="error">Yanlış Kod</div>
-</div>
-
-<div id="result">
-<img id="photo"><br><br>
+</div><div id="result">
+<img id="photo">
 <button onclick="playMusic()">Şarkıyı Çal 🎵</button>
-</div>
+</div><div id="musicBox">
+<iframe id="ytPlayer" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+</div><div id="heartLayer"></div><script>
 
-<div id="heartLayer"></div>
-
-<script>
-// Kod -> YouTube linkleri
 const youtubeLinks = {
-  "x7Kp92Lm": "https://youtu.be/06-XXOTP3Gc?si=4id6u8cy-wv1aC2g",
-  "tAmGkL87": "https://youtu.be/_eij6Vs7FGo?si=3myIm4jZTN0zRck5",
-  "KOD3": "https://youtu.be/link3",
-  "KOD4": "https://youtu.be/link4",
-  "KOD5": "https://youtu.be/link5",
-  "KOD6": "https://youtu.be/link6",
-  "KOD7": "https://youtu.be/link7",
-  "KOD8": "https://youtu.be/link8",
-  "KOD9": "https://youtu.be/link9",
-  "KOD10": "https://youtu.be/link10",
-  "KOD11": "https://youtu.be/link11",
-  "KOD12": "https://youtu.be/link12",
-  "KOD13": "https://youtu.be/link13",
-  "KOD14": "https://youtu.be/link14",
-  "KOD15": "https://youtu.be/link15",
-  "KOD16": "https://youtu.be/link16",
-  "KOD17": "https://youtu.be/link17",
-  "KOD18": "https://youtu.be/link18",
-  "KOD19": "https://youtu.be/link19",
-  "KOD20": "https://youtu.be/link20"
+"x7Kp92Lm": "https://youtu.be/06-XXOTP3Gc?si=4id6u8cy-wv1aC2g",
+"tAmGkL87": "https://youtu.be/_eij6Vs7FGo?si=3myIm4jZTN0zRck5"
 };
 
-let currentCode = ""; // Kullanıcının girdiği kod
+let currentCode="";
 
 function startExperience(){
-  document.getElementById("playBtn").style.display="none";
-  document.getElementById("leftCurtain").classList.add("openLeft");
-  document.getElementById("rightCurtain").classList.add("openRight");
-  setTimeout(startCountdown,2200);
+document.getElementById("playBtn").style.display="none";
+document.getElementById("leftCurtain").classList.add("openLeft");
+document.getElementById("rightCurtain").classList.add("openRight");
+setTimeout(startCountdown,2200);
 }
 
 function startCountdown(){
-  let countdown=document.getElementById("countdown");
-  let video=document.getElementById("countVideo");
-  countdown.style.display="block";
-  video.play();
-  video.onended=function(){ flash(); }
+let c=document.getElementById("countdown");
+let v=document.getElementById("countVideo");
+c.style.display="block";
+v.play();
+v.onended=function(){flash();}
 }
 
 function flash(){
-  let flash=document.getElementById("flash");
-  flash.style.opacity="1";
-  setTimeout(()=>{
-    flash.style.opacity="0";
-    showCode();
-  },300);
+let f=document.getElementById("flash");
+f.style.opacity="1";
+setTimeout(()=>{
+f.style.opacity="0";
+showCode();
+},300);
 }
 
 function showCode(){
-  document.getElementById("stage").style.display="none";
-  let screen=document.getElementById("codeScreen");
-  screen.style.display="flex";
+document.getElementById("stage").style.display="none";
+document.getElementById("codeScreen").style.display="flex";
 
-  setInterval(()=>{
-    let h=document.createElement("div");
-    h.className="heart";
-    h.innerText="❤";
-    h.style.left=Math.random()*100+"%";
-    document.getElementById("heartLayer").appendChild(h);
-    setTimeout(()=>h.remove(),6000);
-  },300);
+setInterval(()=>{
+let h=document.createElement("div");
+h.className="heart";
+h.innerText="❤";
+h.style.left=Math.random()*100+"%";
+document.getElementById("heartLayer").appendChild(h);
+setTimeout(()=>h.remove(),6000);
+},300);
 }
 
 function go(){
-  let code=document.getElementById("codeInput").value.trim();
-  if(code==="") return;
+let code=document.getElementById("codeInput").value.trim();
+if(code==="") return;
 
-  currentCode = code; // girilen kodu kaydet
+currentCode=code;
 
-  let photoURL="https://res.cloudinary.com/dbtlit7hz/image/upload/clients/"+code+"/"+code+".jpg";
-  let img=new Image();
-  img.onload=function(){
-    document.getElementById("photo").src=photoURL;
-    document.getElementById("codeScreen").style.display="none";
-    document.getElementById("result").style.display="flex";
-  };
-  img.onerror=function(){
-    document.getElementById("error").style.display="block";
-  };
-  img.src=photoURL;
+let photoURL="https://res.cloudinary.com/dbtlit7hz/image/upload/clients/"+code+"/"+code+".jpg";
+let img=new Image();
+
+img.onload=function(){
+document.getElementById("photo").src=photoURL;
+document.getElementById("codeScreen").style.display="none";
+document.getElementById("result").style.display="flex";
+};
+
+img.onerror=function(){
+document.getElementById("error").style.display="block";
+};
+
+img.src=photoURL;
 }
 
+/* 🔥 FULLSCREEN SİNEMATİK AÇILAN VİDEO */
 function playMusic(){
-  // Girilen koda özel YouTube linkine yönlendir
-  let url = youtubeLinks[currentCode];
-  if(url){
-    window.open(url,"_blank");
-  } else {
-    alert("Bu koda ait şarkı bulunamadı!");
-  }
-}
-</script>
+let url=youtubeLinks[currentCode];
+if(url){
+let embedUrl=url.replace("https://youtu.be/","https://www.youtube.com/embed/")+"?autoplay=1";
 
-</body>
+document.getElementById("result").style.display="none";
+document.getElementById("musicBox").style.display="flex";
+document.getElementById("ytPlayer").src=embedUrl;
+}else{
+alert("Bu koda ait şarkı bulunamadı!");
+}
+}
+
+</script></body>
 </html>
