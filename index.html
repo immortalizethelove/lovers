@@ -127,10 +127,11 @@ img.src=photoURL;
 function playMusic(){
 let id=youtubeLinks[currentCode];
 if(!id){alert("Şarkı yok");return;}
+
+/* Burada overlay ve intro başlıyor */
 result.style.display="none";
 musicBox.style.display="block";
 
-/* SİNEMATİK INTRO */
 introOverlay.style.display="flex";
 introText.innerHTML="Seninle her an bir mucize ❤️";
 introText.className="fade";
@@ -142,18 +143,17 @@ introText.innerHTML="Bu şarkı sadece sana...";
 introText.className="fade";
 },3000);
 
-/* Video yüklenince overlay kalkacak */
+/* YouTube Player */
 function startYTVideo(){
 player=new YT.Player('player',{
 videoId:id,
 playerVars:{start:12},
 events:{
 'onReady':function(e){
-playerDiv=document.getElementById("player");
-setTimeout(()=>{playerDiv.style.filter="blur(0px)";},500);
 introOverlay.style.display="none";
 introSound.pause();
 introSound.currentTime=0;
+document.getElementById("player").style.filter="blur(0px)";
 },
 'onStateChange':onPlayerStateChange
 }
