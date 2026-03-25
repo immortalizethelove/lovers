@@ -60,7 +60,7 @@ box-sizing:border-box;
 
 #photo{width:80%;max-width:400px;border-radius:20px;margin-bottom:10px;}
 
-/* 🔥 FULLSCREEN SİNEMATİK VİDEO */
+/* FULLSCREEN VİDEO */
 #musicBox{
 display:none;
 position:fixed;
@@ -80,10 +80,18 @@ height:100%;
 border:none;
 }
 
+/* 🔥 KALPLER EN ÜSTTE */
 #heartLayer{
-position:fixed;width:100%;height:100%;
-top:0;left:0;pointer-events:none;overflow:hidden;
+position:fixed;
+width:100%;
+height:100%;
+top:0;
+left:0;
+pointer-events:none;
+overflow:hidden;
+z-index:999;
 }
+
 .heart{position:absolute;color:red;font-size:22px;animation:float 6s linear infinite;}
 @keyframes float{
 0%{transform:translateY(100vh);opacity:1}
@@ -174,7 +182,6 @@ document.getElementById("error").style.display="block";
 img.src=photoURL;
 }
 
-/* 🔥 FULLSCREEN SİNEMATİK AÇILAN VİDEO */
 function playMusic(){
 let url=youtubeLinks[currentCode];
 if(url){
