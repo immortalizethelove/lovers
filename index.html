@@ -28,21 +28,9 @@ button{padding:12px 25px;margin-top:10px;border:none;border-radius:20px;backgrou
 #heartLayer{position:fixed;width:100%;height:100%;top:0;left:0;pointer-events:none;overflow:hidden;z-index:999;}
 .heart{position:absolute;color:red;font-size:22px;animation:float 6s linear infinite;}
 @keyframes float{0%{transform:translateY(100vh);opacity:1}100%{transform:translateY(-10vh);opacity:0}}
-#overlay{
-  position:fixed;
-  top:0;left:0;width:100%;height:100%;
-  background:black;color:white;
-  display:none;
-  flex-direction:column;
-  align-items:center;justify-content:center;
-  z-index:200;font-size:28px;text-align:center;padding:20px;
-}
+#overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:black;color:white;display:none;flex-direction:column;align-items:center;justify-content:center;z-index:200;font-size:28px;text-align:center;padding:20px;}
 .fadeMsg{animation:fadeText 3s;}
-@keyframes fadeText{
-0%{opacity:0;transform:translateY(20px)}
-50%{opacity:1}
-100%{opacity:0;transform:translateY(-20px)}
-}
+@keyframes fadeText{0%{opacity:0;transform:translateY(20px)}50%{opacity:1}100%{opacity:0;transform:translateY(-20px)}}
 </style>
 </head>
 <body>
@@ -110,8 +98,7 @@ function showCode(){
   document.getElementById("stage").style.display="none";
   document.getElementById("codeScreen").style.display="flex";
   setInterval(()=>{
-    let h=document.createElement("div");
-    h.className="heart";h.innerText="❤";
+    let h=document.createElement("div");h.className="heart";h.innerText="❤";
     h.style.left=Math.random()*100+"%";
     document.getElementById("heartLayer").appendChild(h);
     setTimeout(()=>h.remove(),6000);
@@ -133,18 +120,32 @@ function go(){
   img.src=photoURL;
 }
 
+// Overlay ile video başlatma düzenlendi
 function playMusic(){
   let id=youtubeLinks[currentCode];
   if(!id){alert("Şarkı yok");return;}
+
   document.getElementById("result").style.display="none";
   document.getElementById("overlay").style.display="flex";
   videoOpen=true;
 
   const overlayText=document.getElementById("overlayText");
   const overlayMsgs=["Seninle her an bir mucize ❤️","Bu şarkı sadece sana..."];
-  let msgIdx=0;
+  let idx=0;
 
-  // Overlay süresince kalpler de uçuyor
+  // Overlay mesajlarını sırayla ve fade ile göster
+  function showNextMsg(){
+    if(idx>=overlayMsgs.length){
+      startYTVideo(); // Tüm mesajlar gösterildiğinde video başlasın
+      return;
+    }
+    overlayText.innerHTML=overlayMsgs[idx];
+    overlayText.className="fadeMsg";
+    idx++;
+    setTimeout(showNextMsg,3000); // 3 sn sonra bir sonraki
+  }
+
+  // Kalpler overlay boyunca uçacak
   const heartsInterval=setInterval(()=>{
     let h=document.createElement("div");h.className="heart";h.innerText="❤";
     h.style.left=Math.random()*100+"%";
@@ -152,24 +153,13 @@ function playMusic(){
     setTimeout(()=>h.remove(),6000);
   },300);
 
-  // Mesaj geçişleri 5 sn arayla
-  const msgInterval=setInterval(()=>{
-    overlayText.innerHTML=overlayMsgs[msgIdx];
-    overlayText.className="fadeMsg";
-    msgIdx=(msgIdx+1)%overlayMsgs.length;
-  },5000);
-
-  // 10 sn sonra overlay kalkıp video başlasın
-  setTimeout(()=>{
+  function startYTVideo(){
     clearInterval(heartsInterval);
-    clearInterval(msgInterval);
     document.getElementById("overlay").style.display="none";
+    player=new YT.Player('player',{videoId:id,events:{'onStateChange':onPlayerStateChange}});
+  }
 
-    player=new YT.Player('player',{
-      videoId:id,
-      events:{'onStateChange':onPlayerStateChange}
-    });
-  },10000); // 10 saniye
+  showNextMsg();
 }
 
 function onPlayerStateChange(e){if(e.data===0) closeVideo(false);}
