@@ -21,10 +21,13 @@ body{margin:0;background:black;overflow:hidden;font-family:Arial;}
 input{padding:12px;font-size:18px;border:none;border-radius:8px;margin-top:10px;}
 button{padding:12px 25px;margin-top:10px;border:none;border-radius:20px;background:#e91e63;color:white;font-size:18px;cursor:pointer;}
 #error{color:red;margin-top:10px;display:none;}
-#result{display:none;position:fixed;width:100%;height:100%;background:black;flex-direction:column;align-items:center;justify-content:center;}
+#result{display:none;position:fixed;width:100%;height:100%;background:black;flex-direction:column;align-items:center;justify-content:flex-start; padding-top:20px;}
 #photo{width:80%;max-width:400px;border-radius:20px;}
-#musicBox{display:none;width:90%;max-width:500px;margin-top:15px;}
-#musicBox iframe{width:100%;height:280px;border:none;border-radius:15px;}
+#musicBox{display:none;width:90%;max-width:500px;margin-top:15px;margin-bottom:20px;}
+#musicBox iframe{width:100%;height:calc(50vh);border:none;border-radius:15px;}
+@media (max-width:480px){
+  #musicBox iframe{height:calc(40vh);}
+}
 #heartLayer{position:fixed;width:100%;height:100%;top:0;left:0;pointer-events:none;overflow:hidden;}
 .heart{position:absolute;color:red;font-size:22px;animation:float 6s linear infinite;}
 @keyframes float{0%{transform:translateY(100vh);opacity:1}100%{transform:translateY(-10vh);opacity:0}}
@@ -148,7 +151,6 @@ function go(){
 function playMusic(){
   let url = youtubeLinks[currentCode];
   if(url){
-    // iframe için embed linke çevir
     let embedUrl = url.replace("https://youtu.be/", "https://www.youtube.com/embed/") + "?autoplay=1";
     document.getElementById("musicBox").style.display = "block";
     document.getElementById("ytPlayer").src = embedUrl;
