@@ -79,58 +79,67 @@ let currentCode="", player, videoOpen=false;
 window.addEventListener("popstate",function(){if(videoOpen) closeVideo(true);});
 
 function startExperience(){
-playBtn.style.display="none";
-leftCurtain.classList.add("openLeft");
-rightCurtain.classList.add("openRight");
+document.getElementById("playBtn").style.display="none";
+document.getElementById("leftCurtain").classList.add("openLeft");
+document.getElementById("rightCurtain").classList.add("openRight");
 setTimeout(startCountdown,2200);
 }
 
 function startCountdown(){
-countdown.style.display="block";
-countVideo.play();
-countVideo.onended=function(){flash();}
+let c=document.getElementById("countdown");
+let v=document.getElementById("countVideo");
+c.style.display="block";
+v.play();
+v.onended=function(){flash();}
 }
 
 function flash(){
-flash.style.opacity="1";
-setTimeout(()=>{flash.style.opacity="0";showCode();},300);
+let f=document.getElementById("flash");
+f.style.opacity="1";
+setTimeout(()=>{f.style.opacity="0";showCode();},300);
 }
 
 function showCode(){
-stage.style.display="none";
-codeScreen.style.display="flex";
+document.getElementById("stage").style.display="none";
+document.getElementById("codeScreen").style.display="flex";
 setInterval(()=>{
 let h=document.createElement("div");
 h.className="heart";
 h.innerText="❤";
 h.style.left=Math.random()*100+"%";
-heartLayer.appendChild(h);
+document.getElementById("heartLayer").appendChild(h);
 setTimeout(()=>h.remove(),6000);
 },300);
 }
 
 function go(){
-let code=codeInput.value.trim();
+let code=document.getElementById("codeInput").value.trim();
 if(code==="") return;
 currentCode=code;
 let photoURL="https://res.cloudinary.com/dbtlit7hz/image/upload/clients/"+code+"/"+code+".jpg";
 let img=new Image();
 img.onload=function(){
-photo.src=photoURL;
-codeScreen.style.display="none";
-result.style.display="flex";
+document.getElementById("photo").src=photoURL;
+document.getElementById("codeScreen").style.display="none";
+document.getElementById("result").style.display="flex";
 };
-img.onerror=function(){error.style.display="block";};
+img.onerror=function(){document.getElementById("error").style.display="block";};
 img.src=photoURL;
 }
 
 function playMusic(){
 let id=youtubeLinks[currentCode];
 if(!id){alert("Şarkı yok");return;}
-result.style.display="none";
-musicBox.style.display="block";
 
-/* SİNEMATİK INTRO */
+document.getElementById("result").style.display="none";
+document.getElementById("musicBox").style.display="block";
+history.pushState({video:true},"");
+videoOpen=true;
+
+/* Romantik overlay ve intro müzik */
+let introOverlay=document.getElementById("introOverlay");
+let introText=document.getElementById("introText");
+let introSound=document.getElementById("introSound");
 introOverlay.style.display="flex";
 introText.innerHTML="Seninle her an bir mucize ❤️";
 introText.className="fade";
@@ -142,19 +151,16 @@ introText.innerHTML="Bu şarkı sadece sana...";
 introText.className="fade";
 },3000);
 
-setTimeout(()=>{startYTVideo(id);},6500);
-
-history.pushState({video:true},"");
-videoOpen=true;
+setTimeout(()=>{startYTVideo(id,introOverlay,introSound);},6000);
 }
 
-function startYTVideo(id){
+function startYTVideo(id,introOverlay,introSound){
 player=new YT.Player('player',{
 videoId:id,
-playerVars:{start:12},
 events:{
 'onReady':function(e){
-document.getElementById("player").style.filter="blur(0px)";
+let playerDiv=document.getElementById("player");
+setTimeout(()=>{playerDiv.style.filter="blur(0px)";},500);
 introOverlay.style.display="none";
 introSound.pause();
 introSound.currentTime=0;
@@ -164,13 +170,12 @@ introSound.currentTime=0;
 });
 }
 
-function onPlayerStateChange(e){if(e.data===0) closeVideo(false);}
+function onPlayerStateChange(e){if(e.data===0){closeVideo(false);}}
 
 function closeVideo(fromBack){
-musicBox.style.display="none";
-result.style.display="flex";
+document.getElementById("musicBox").style.display="none";
+document.getElementById("result").style.display="flex";
 if(player){player.destroy();player=null;}
-document.getElementById("player").style.filter="blur(20px)";
 videoOpen=false;
 if(!fromBack){history.back();}
 }
