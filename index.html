@@ -33,19 +33,32 @@ button{padding:12px 25px;margin-top:15px;border:none;border-radius:20px;backgrou
 #musicBox{position:fixed;width:100%;height:100%;top:0;left:0;opacity:0;pointer-events:none;}
 #player{width:100%;height:100%;}
 
-/* Overlay güncel */
+/* Overlay güncel ve düzeltilmiş */
 #overlay{
-position:fixed;width:100%;height:100%;
-background:black;color:white;
-display:none;align-items:center;justify-content:center;
-font-size:16px; /* mobil uyumlu küçültüldü */
-text-align:center;
-padding:10px 15px; /* daha dar padding */
-z-index:200;
-animation:heartBeat 1.2s infinite;
-white-space: nowrap; /* tek satır */
-overflow: hidden;
-text-overflow: ellipsis;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  color: white;
+  display: none;
+  align-items: center;       /* dikey ortalama */
+  justify-content: center;   /* yatay ortalama */
+  text-align: center;        /* çok satırlı yazıyı ortala */
+  padding: 10px;             /* sağ-sol eşit boşluk */
+  box-sizing: border-box;    /* padding dahil toplam genişlik */
+  font-size: 16px;           /* mobil başlangıç fontu */
+  z-index: 200;
+  animation: heartBeat 1.2s infinite;
+  white-space: normal;       /* tek satır zorlamayı kaldır */
+  overflow: hidden;
+}
+
+@media (min-width: 600px) {
+  #overlay {
+    font-size: 24px;         /* tablet/masaüstü font büyüklüğü */
+  }
 }
 
 @keyframes heartBeat{
@@ -170,7 +183,7 @@ videoOpen=true;
 
 history.pushState({video:true},"");
 
-// ⭐ Intro 7 sn — YouTube başlamaz
+// ⭐ Intro 5 sn — YouTube başlamaz
 setTimeout(()=>{
 
 overlay.style.display="none";
@@ -183,7 +196,7 @@ playerVars:{autoplay:1,controls:0,modestbranding:1},
 events:{'onStateChange':onPlayerStateChange}
 });
 
-},7000);
+},5000);
 
 }
 
