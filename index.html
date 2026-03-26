@@ -150,9 +150,10 @@ player=null;
 
 videoOpen=false;
 
-/* SADECE GERİ TUŞUNDAN GELMEDİYSE ve history varsa geri al */
-if(!fromBack && history.state){
+/* SADECE GERİ TUŞUNDAN GELMEDİYSE history geri al */
+if(!fromBack){
 history.back();
+}
 }
 
 </script></body>
