@@ -94,7 +94,11 @@ const youtubeLinks={
 
 let currentCode="",player,videoOpen=false;
 
-window.addEventListener("popstate",()=>{if(videoOpen)closeVideo(true);});
+window.addEventListener("popstate",()=>{
+if(videoOpen){
+closeVideo(true);
+}
+});
 
 function startExperience(){
 playBtn.style.display="none";
@@ -114,6 +118,7 @@ flash.style.opacity=0;
 stage.style.display="none";
 codeScreen.style.display="flex";
 startHearts();
+history.pushState({code:true},"");
 },300);
 }
 
@@ -138,6 +143,7 @@ img.onload=()=>{
 photo.src=url;
 codeScreen.style.display="none";
 result.style.display="flex";
+history.pushState({photo:true},"");
 };
 img.src=url;
 }
@@ -151,7 +157,9 @@ result.style.display="none";
 overlay.style.display="flex";
 videoOpen=true;
 
-// ⭐ 10 sn sonra YouTube başlasın
+history.pushState({video:true},"");
+
+// ⭐ Intro 10 sn — YouTube başlamaz
 setTimeout(()=>{
 
 overlay.style.display="none";
@@ -173,12 +181,24 @@ if(e.data===0)closeVideo(false);
 }
 
 function closeVideo(fromBack){
+
 musicBox.style.opacity=0;
 musicBox.style.pointerEvents="none";
+
 result.style.display="flex";
-if(player){player.destroy();player=null;}
+
+if(player){
+player.destroy();
+player=null;
+}
+
 videoOpen=false;
-if(!fromBack)history.back();
+
+// ⭐ kritik satır — geri tuşu dengesi
+if(fromBack){
+history.pushState({photo:true},"");
+}
+
 }
 
 </script>
