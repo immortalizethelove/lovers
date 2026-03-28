@@ -65,13 +65,12 @@ button{padding:12px 25px;margin-top:10px;border:none;border-radius:20px;backgrou
 let currentCode="";
 let player;
 let videoOpen=false;
-const GITHUB_USER="KULLANICI"; // <- buraya GitHub kullanıcı adın
-const GITHUB_REPO="immortalizethelove"; // <- buraya repo adın
-const GITHUB_BRANCH="main"; // <- main veya master
 
 /* GERİ TUŞU */
 window.addEventListener("popstate",function(){
-  if(videoOpen){ closeVideo(true); }
+  if(videoOpen){
+    closeVideo(true);
+  }
 });
 
 /* Başlatma */
@@ -136,13 +135,11 @@ function go(){
 /* JSON'dan YouTube ID çek */
 async function getYouTubeID(code){
   try{
-    let url = `https://raw.githubusercontent.com/${GITHUB_USER}/${GITHUB_REPO}/${GITHUB_BRANCH}/links/${code}/data.json`;
+    let url = `https://raw.githubusercontent.com/immortalizethelove/lovers/main/links/${code}/data.json`;
     let res = await fetch(url);
-    if(!res.ok) throw "JSON yok";
     let data = await res.json();
     return data.youtube;
   }catch(e){
-    console.log("YouTube ID bulunamadı:", e);
     return null;
   }
 }
@@ -166,18 +163,25 @@ async function playMusic(){
 }
 
 function onPlayerStateChange(e){
-  if(e.data===0){ closeVideo(false); }
+  if(e.data===0){
+    closeVideo(false);
+  }
 }
 
 function closeVideo(fromBack){
   document.getElementById("musicBox").style.display="none";
   document.getElementById("result").style.display="flex";
 
-  if(player){ player.destroy(); player=null; }
+  if(player){
+    player.destroy();
+    player=null;
+  }
 
   videoOpen=false;
 
-  if(!fromBack){ history.back(); }
+  if(!fromBack){
+    history.back();
+  }
 }
 
 </script>
