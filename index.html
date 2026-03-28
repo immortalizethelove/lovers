@@ -1,8 +1,10 @@
-<!DOCTYPE html><html lang="tr">
+<!DOCTYPE html>
+<html lang="tr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>For My Love</title><style>
+<title>For My Love</title>
+<style>
 body{margin:0;background:black;overflow:hidden;font-family:Arial;}
 #stage{position:fixed;width:100%;height:100%;background:black;display:flex;align-items:center;justify-content:center;}
 #playBtn{position:absolute;z-index:20;width:120px;height:120px;background:black;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 0 30px rgba(0,0,0,0.8);}
@@ -26,28 +28,39 @@ button{padding:12px 25px;margin-top:10px;border:none;border-radius:20px;backgrou
 #heartLayer{position:fixed;width:100%;height:100%;top:0;left:0;pointer-events:none;overflow:hidden;z-index:999;}
 .heart{position:absolute;color:red;font-size:22px;animation:float 6s linear infinite;}
 @keyframes float{0%{transform:translateY(100vh);opacity:1}100%{transform:translateY(-10vh);opacity:0}}
-</style></head><body><div id="stage">
-<div id="playBtn" onclick="startExperience()"></div>
-<div id="leftCurtain" class="curtain"></div>
-<div id="rightCurtain" class="curtain"></div>
-<div id="countdown"><video id="countVideo" src="countdown.mp4"></video></div>
-</div><div id="flash"></div><div id="codeScreen">
-<h2>❤️Sürprize son bir adım❤️</h2>
-<input id="codeInput" placeholder="Kod gir">
-<button onclick="go()">Aç</button>
-<div id="error">Yanlış Kod</div>
-</div><div id="result">
-<img id="photo">
-<button onclick="playMusic()">Şarkıyı Çal 🎵</button>
-</div><div id="musicBox">
-<div id="player"></div>
-</div><div id="heartLayer"></div><script src="https://www.youtube.com/iframe_api"></script><script>
+</style>
+</head>
+<body>
 
-const youtubeLinks={
-"x7Kp92Lm":"06-XXOTP3Gc",
-"tAmGkL87":"_eij6Vs7FGo",
-"gBcMaF88":"uwk9KEPcovU"
-};
+<div id="stage">
+  <div id="playBtn" onclick="startExperience()"></div>
+  <div id="leftCurtain" class="curtain"></div>
+  <div id="rightCurtain" class="curtain"></div>
+  <div id="countdown"><video id="countVideo" src="countdown.mp4"></video></div>
+</div>
+
+<div id="flash"></div>
+
+<div id="codeScreen">
+  <h2>❤️Sürprize son bir adım❤️</h2>
+  <input id="codeInput" placeholder="Kod gir">
+  <button onclick="go()">Aç</button>
+  <div id="error">Yanlış Kod</div>
+</div>
+
+<div id="result">
+  <img id="photo">
+  <button onclick="playMusic()">Şarkıyı Çal 🎵</button>
+</div>
+
+<div id="musicBox">
+  <div id="player"></div>
+</div>
+
+<div id="heartLayer"></div>
+
+<script src="https://www.youtube.com/iframe_api"></script>
+<script>
 
 let currentCode="";
 let player;
@@ -55,107 +68,122 @@ let videoOpen=false;
 
 /* GERİ TUŞU */
 window.addEventListener("popstate",function(){
-if(videoOpen){
-closeVideo(true);
-}
+  if(videoOpen){
+    closeVideo(true);
+  }
 });
 
+/* Başlatma */
 function startExperience(){
-document.getElementById("playBtn").style.display="none";
-document.getElementById("leftCurtain").classList.add("openLeft");
-document.getElementById("rightCurtain").classList.add("openRight");
-setTimeout(startCountdown,2200);
+  document.getElementById("playBtn").style.display="none";
+  document.getElementById("leftCurtain").classList.add("openLeft");
+  document.getElementById("rightCurtain").classList.add("openRight");
+  setTimeout(startCountdown,2200);
 }
 
 function startCountdown(){
-let c=document.getElementById("countdown");
-let v=document.getElementById("countVideo");
-c.style.display="block";
-v.play();
-v.onended=function(){flash();}
+  let c=document.getElementById("countdown");
+  let v=document.getElementById("countVideo");
+  c.style.display="block";
+  v.play();
+  v.onended=function(){flash();}
 }
 
 function flash(){
-let f=document.getElementById("flash");
-f.style.opacity="1";
-setTimeout(()=>{f.style.opacity="0";showCode();},300);
+  let f=document.getElementById("flash");
+  f.style.opacity="1";
+  setTimeout(()=>{f.style.opacity="0";showCode();},300);
 }
 
 function showCode(){
-document.getElementById("stage").style.display="none";
-document.getElementById("codeScreen").style.display="flex";
+  document.getElementById("stage").style.display="none";
+  document.getElementById("codeScreen").style.display="flex";
 
-setInterval(()=>{
-let h=document.createElement("div");
-h.className="heart";
-h.innerText="❤";
-h.style.left=Math.random()*100+"%";
-document.getElementById("heartLayer").appendChild(h);
-setTimeout(()=>h.remove(),6000);
-},300);
+  setInterval(()=>{
+    let h=document.createElement("div");
+    h.className="heart";
+    h.innerText="❤";
+    h.style.left=Math.random()*100+"%";
+    document.getElementById("heartLayer").appendChild(h);
+    setTimeout(()=>h.remove(),6000);
+  },300);
 }
 
+/* Fotoğraf göster */
 function go(){
-let code=document.getElementById("codeInput").value.trim();
-if(code==="") return;
+  let code=document.getElementById("codeInput").value.trim();
+  if(code==="") return;
 
-currentCode=code;
+  currentCode=code;
 
-let photoURL="https://res.cloudinary.com/dbtlit7hz/image/upload/clients/"+code+"/"+code+".jpg";
-let img=new Image();
+  let photoURL=`https://res.cloudinary.com/dbtlit7hz/image/upload/clients/${code}/${code}.jpg`;
+  let img=new Image();
 
-img.onload=function(){
-document.getElementById("photo").src=photoURL;
-document.getElementById("codeScreen").style.display="none";
-document.getElementById("result").style.display="flex";
-};
+  img.onload=function(){
+    document.getElementById("photo").src=photoURL;
+    document.getElementById("codeScreen").style.display="none";
+    document.getElementById("result").style.display="flex";
+  };
 
-img.onerror=function(){
-document.getElementById("error").style.display="block";
-};
+  img.onerror=function(){
+    document.getElementById("error").style.display="block";
+  };
 
-img.src=photoURL;
+  img.src=photoURL;
 }
 
-function playMusic(){
-let id=youtubeLinks[currentCode];
-if(!id){alert("Şarkı yok");return;}
+/* JSON'dan YouTube ID çek */
+async function getYouTubeID(code){
+  try{
+    let url = `https://raw.githubusercontent.com/KULLANICI/REPO/main/links/${code}/data.json`;
+    let res = await fetch(url);
+    let data = await res.json();
+    return data.youtube;
+  }catch(e){
+    return null;
+  }
+}
 
-document.getElementById("result").style.display="none";
-document.getElementById("musicBox").style.display="block";
+/* Müzik çal */
+async function playMusic(){
+  let id = await getYouTubeID(currentCode);
+  if(!id){ alert("Şarkı yok"); return; }
 
-history.pushState({video:true},"");
+  document.getElementById("result").style.display="none";
+  document.getElementById("musicBox").style.display="block";
 
-videoOpen=true;
+  history.pushState({video:true},"");
 
-player=new YT.Player('player',{
-videoId:id,
-events:{'onStateChange':onPlayerStateChange}
-});
+  videoOpen=true;
+
+  player = new YT.Player('player',{
+    videoId:id,
+    events:{'onStateChange':onPlayerStateChange}
+  });
 }
 
 function onPlayerStateChange(e){
-if(e.data===0){
-closeVideo(false);
-}
+  if(e.data===0){
+    closeVideo(false);
+  }
 }
 
 function closeVideo(fromBack){
-document.getElementById("musicBox").style.display="none";
-document.getElementById("result").style.display="flex";
+  document.getElementById("musicBox").style.display="none";
+  document.getElementById("result").style.display="flex";
 
-if(player){
-player.destroy();
-player=null;
+  if(player){
+    player.destroy();
+    player=null;
+  }
+
+  videoOpen=false;
+
+  if(!fromBack){
+    history.back();
+  }
 }
 
-videoOpen=false;
-
-/* SADECE GERİ TUŞUNDAN GELMEDİYSE history geri al */
-if(!fromBack){
-history.back();
-}
-}
-
-</script></body>
+</script>
+</body>
 </html>
