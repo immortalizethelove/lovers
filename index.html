@@ -119,51 +119,63 @@ function showCode(){
   },300);
 }
 
-/* Fotoğraf göster */
-function go(){
+/* Kod doğrula ve içerikleri göster */
+async function go(){
   let code=document.getElementById("codeInput").value.trim();
   if(code==="") return;
 
   currentCode=code;
+  document.getElementById("error").style.display="none";
 
-  let photoURL=`https://res.cloudinary.com/dbtlit7hz/image/upload/clients/${code}/${code}.jpg`;
-  let img=new Image();
+  let data = await getMediaData(code);
 
-  img.onload=function(){
-    document.getElementById("photo").src=photoURL;
-    document.getElementById("codeScreen").style.display="none";
-    document.getElementById("result").style.display="flex";
-    document.getElementById("error").style.display="none";
-    loadActionButtons(code);
-  };
-
-  img.onerror=function(){
+  if(!data){
     document.getElementById("error").style.display="block";
-  };
+    return;
+  }
 
-  img.src=photoURL;
+  youtubeId = data.youtube || null;
+  audioURL = data.audio || null;
+
+  document.getElementById("codeScreen").style.display="none";
+  document.getElementById("result").style.display="flex";
+
+  loadPhoto(code);
+  loadActionButtons();
 }
 
-/* data.json'dan YouTube ID ve ses linkini çek */
+/* data.json'dan YouTube ID ve ses linkini çek (kod geçerliliği de burada belirlenir) */
 async function getMediaData(code){
   try{
     let url = `https://raw.githubusercontent.com/immortalizethelove/lovers/main/links/${code}/data.json`;
     let res = await fetch(url);
-    let data = await res.json();
-    return data;
+    if(!res.ok) return null;
+    return await res.json();
   }catch(e){
-    return {};
+    return null;
   }
 }
 
+/* Fotoğraf varsa göster, yoksa gizle (artık kod geçerliliğini etkilemiyor) */
+function loadPhoto(code){
+  let photoURL=`https://res.cloudinary.com/dbtlit7hz/image/upload/clients/${code}/${code}.jpg`;
+  let img=document.getElementById("photo");
+  let test=new Image();
+
+  test.onload=function(){
+    img.src=photoURL;
+    img.style.display="block";
+  };
+  test.onerror=function(){
+    img.style.display="none";
+  };
+  test.src=photoURL;
+}
+
 /* Hangi butonun/butonların gösterileceğine karar ver */
-async function loadActionButtons(code){
+function loadActionButtons(){
   let container=document.getElementById("actionButtons");
   container.innerHTML="";
-
-  let data = await getMediaData(code);
-  youtubeId = data.youtube || null;
-  audioURL = data.audio || null;
 
   if(youtubeId){
     let btn=document.createElement("button");
