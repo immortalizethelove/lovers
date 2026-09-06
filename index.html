@@ -23,8 +23,11 @@ button{padding:12px 25px;margin-top:10px;border:none;border-radius:20px;backgrou
 #error{color:red;margin-top:10px;display:none;}
 #result{display:none;position:fixed;width:100%;height:100%;background:black;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:20px;box-sizing:border-box;}
 #photo{width:80%;max-width:400px;border-radius:20px;margin-bottom:10px;}
+#actionButtons{display:flex;flex-direction:column;align-items:center;gap:10px;}
 #musicBox{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:black;z-index:50;}
 #player{width:100%;height:100%;}
+#audioBox{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:black;z-index:50;flex-direction:column;align-items:center;justify-content:center;}
+#audioBox audio{width:85%;max-width:400px;}
 #heartLayer{position:fixed;width:100%;height:100%;top:0;left:0;pointer-events:none;overflow:hidden;z-index:999;}
 .heart{position:absolute;color:red;font-size:22px;animation:float 6s linear infinite;}
 @keyframes float{0%{transform:translateY(100vh);opacity:1}100%{transform:translateY(-10vh);opacity:0}}
@@ -50,11 +53,16 @@ button{padding:12px 25px;margin-top:10px;border:none;border-radius:20px;backgrou
 
 <div id="result">
   <img id="photo">
-  <button onclick="playMusic()">Şarkıyı Çal 🎵</button>
+  <div id="actionButtons"></div>
 </div>
 
 <div id="musicBox">
   <div id="player"></div>
+</div>
+
+<div id="audioBox">
+  <audio id="audioPlayer" controls autoplay></audio>
+  <button onclick="closeAudio()">Kapat</button>
 </div>
 
 <div id="heartLayer"></div>
@@ -65,6 +73,8 @@ button{padding:12px 25px;margin-top:10px;border:none;border-radius:20px;backgrou
 let currentCode="";
 let player;
 let videoOpen=false;
+let youtubeId=null;
+let audioURL=null;
 
 /* GERİ TUŞU */
 window.addEventListener("popstate",function(){
@@ -123,6 +133,8 @@ function go(){
     document.getElementById("photo").src=photoURL;
     document.getElementById("codeScreen").style.display="none";
     document.getElementById("result").style.display="flex";
+    document.getElementById("error").style.display="none";
+    loadActionButtons(code);
   };
 
   img.onerror=function(){
@@ -132,22 +144,45 @@ function go(){
   img.src=photoURL;
 }
 
-/* JSON'dan YouTube ID çek */
-async function getYouTubeID(code){
+/* data.json'dan YouTube ID ve ses linkini çek */
+async function getMediaData(code){
   try{
     let url = `https://raw.githubusercontent.com/immortalizethelove/lovers/main/links/${code}/data.json`;
     let res = await fetch(url);
     let data = await res.json();
-    return data.youtube;
+    return data;
   }catch(e){
-    return null;
+    return {};
   }
 }
 
-/* Müzik çal */
+/* Hangi butonun/butonların gösterileceğine karar ver */
+async function loadActionButtons(code){
+  let container=document.getElementById("actionButtons");
+  container.innerHTML="";
+
+  let data = await getMediaData(code);
+  youtubeId = data.youtube || null;
+  audioURL = data.audio || null;
+
+  if(youtubeId){
+    let btn=document.createElement("button");
+    btn.innerText="Şarkını Çal 🎵";
+    btn.onclick=playMusic;
+    container.appendChild(btn);
+  }
+
+  if(audioURL){
+    let btn=document.createElement("button");
+    btn.innerText="Sesli Mesajını Dinle 🎧";
+    btn.onclick=playAudioMessage;
+    container.appendChild(btn);
+  }
+}
+
+/* Müzik çal (YouTube) */
 async function playMusic(){
-  let id = await getYouTubeID(currentCode);
-  if(!id){ alert("Şarkı yok"); return; }
+  if(!youtubeId){ alert("Şarkı yok"); return; }
 
   document.getElementById("result").style.display="none";
   document.getElementById("musicBox").style.display="block";
@@ -157,7 +192,7 @@ async function playMusic(){
   videoOpen=true;
 
   player = new YT.Player('player',{
-    videoId:id,
+    videoId:youtubeId,
     events:{'onStateChange':onPlayerStateChange}
   });
 }
@@ -182,6 +217,24 @@ function closeVideo(fromBack){
   if(!fromBack){
     history.back();
   }
+}
+
+/* Sesli mesajı çal (Cloudinary mp3) */
+function playAudioMessage(){
+  if(!audioURL) return;
+  document.getElementById("result").style.display="none";
+  document.getElementById("audioBox").style.display="flex";
+  let p=document.getElementById("audioPlayer");
+  p.src=audioURL;
+  p.play();
+}
+
+function closeAudio(){
+  let p=document.getElementById("audioPlayer");
+  p.pause();
+  p.currentTime=0;
+  document.getElementById("audioBox").style.display="none";
+  document.getElementById("result").style.display="flex";
 }
 
 </script>
