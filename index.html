@@ -24,10 +24,9 @@ button{padding:12px 25px;margin-top:10px;border:none;border-radius:20px;backgrou
 #result{display:none;position:fixed;width:100%;height:100%;background:black;flex-direction:column;align-items:center;justify-content:flex-start;padding-top:20px;box-sizing:border-box;}
 #photo{width:80%;max-width:400px;border-radius:20px;margin-bottom:10px;}
 #actionButtons{display:flex;flex-direction:column;align-items:center;gap:10px;}
+#audioPlayer{display:none;width:85%;max-width:400px;margin-top:10px;}
 #musicBox{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:black;z-index:50;}
 #player{width:100%;height:100%;}
-#audioBox{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:black;z-index:50;flex-direction:column;align-items:center;justify-content:center;}
-#audioBox audio{width:85%;max-width:400px;}
 #heartLayer{position:fixed;width:100%;height:100%;top:0;left:0;pointer-events:none;overflow:hidden;z-index:999;}
 .heart{position:absolute;color:red;font-size:22px;animation:float 6s linear infinite;}
 @keyframes float{0%{transform:translateY(100vh);opacity:1}100%{transform:translateY(-10vh);opacity:0}}
@@ -54,15 +53,11 @@ button{padding:12px 25px;margin-top:10px;border:none;border-radius:20px;backgrou
 <div id="result">
   <img id="photo">
   <div id="actionButtons"></div>
+  <audio id="audioPlayer" controls></audio>
 </div>
 
 <div id="musicBox">
   <div id="player"></div>
-</div>
-
-<div id="audioBox">
-  <audio id="audioPlayer" controls autoplay></audio>
-  <button onclick="closeAudio()">Kapat</button>
 </div>
 
 <div id="heartLayer"></div>
@@ -150,7 +145,7 @@ async function go(){
 /* Vercel'in verdiği adresle "SENIN-VERCEL-PROJEN" kısmını değiştir. */
 async function getMediaData(code){
   try{
-    let res = await fetch(`https://lovers-api.vercel.app/api/getdata?code=${encodeURIComponent(code)}`);
+    let res = await fetch(`https://SENIN-VERCEL-PROJEN.vercel.app/api/getdata?code=${encodeURIComponent(code)}`);
     if(!res.ok) return null;
     return await res.json();
   }catch(e){
@@ -178,6 +173,11 @@ function loadPhoto(code){
 function loadActionButtons(){
   let container=document.getElementById("actionButtons");
   container.innerHTML="";
+
+  let audioPlayer=document.getElementById("audioPlayer");
+  audioPlayer.pause();
+  audioPlayer.removeAttribute("src");
+  audioPlayer.style.display="none";
 
   if(youtubeId){
     let btn=document.createElement("button");
@@ -233,22 +233,13 @@ function closeVideo(fromBack){
   }
 }
 
-/* Sesli mesajı çal (Cloudinary mp3) */
+/* Sesli mesajı çal (Cloudinary mp3) - fotoğraf görünür kalır, ekran değişmez */
 function playAudioMessage(){
   if(!audioURL) return;
-  document.getElementById("result").style.display="none";
-  document.getElementById("audioBox").style.display="flex";
   let p=document.getElementById("audioPlayer");
   p.src=audioURL;
+  p.style.display="block";
   p.play();
-}
-
-function closeAudio(){
-  let p=document.getElementById("audioPlayer");
-  p.pause();
-  p.currentTime=0;
-  document.getElementById("audioBox").style.display="none";
-  document.getElementById("result").style.display="flex";
 }
 
 </script>
