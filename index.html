@@ -150,7 +150,7 @@ async function go(){
 /* Vercel'in verdiği adresle "SENIN-VERCEL-PROJEN" kısmını değiştir. */
 async function getMediaData(code){
   try{
-    let res = await fetch(`https://lovers-api.vercel.app/api/getdata?code=${encodeURIComponent(code)}`);
+    let res = await fetch(`https://lovers-r7ary9ylp-immortalizethelove.vercel.app/api/getdata?code=${encodeURIComponent(code)}`);
     if(!res.ok) return null;
     return await res.json();
   }catch(e){
