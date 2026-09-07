@@ -46,7 +46,7 @@ button{padding:12px 25px;margin-top:10px;border:none;border-radius:20px;backgrou
 
 <div id="codeScreen">
   <h2>❤️Sürprize son bir adım❤️</h2>
-  <input id="codeInput" placeholder="Kod gir">
+  <input id="codeInput" placeholder="Kod gir" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false">
   <button onclick="go()">Aç</button>
   <div id="error">Yanlış Kod</div>
 </div>
@@ -145,10 +145,12 @@ async function go(){
 }
 
 /* data.json'dan YouTube ID ve ses linkini çek (kod geçerliliği de burada belirlenir) */
+/* index.html GitHub Pages'te kaldığı için (Vercel'den farklı bir alan adı), */
+/* buraya Vercel projenin TAM adresini yazman gerekiyor. Deploy ettikten sonra */
+/* Vercel'in verdiği adresle "SENIN-VERCEL-PROJEN" kısmını değiştir. */
 async function getMediaData(code){
   try{
-    let url = `https://raw.githubusercontent.com/immortalizethelove/lovers/main/links/${code}/data.json`;
-    let res = await fetch(url);
+    let res = await fetch(`https://SENIN-VERCEL-PROJEN.vercel.app/api/getdata?code=${encodeURIComponent(code)}`);
     if(!res.ok) return null;
     return await res.json();
   }catch(e){
